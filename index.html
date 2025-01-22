@@ -419,7 +419,80 @@ img {
 </style >
 </head >
 </body >
+<div id="notification-bar" style="display: none;">
+        
+        
+  <p style ="background-color :blue ">FILAZANA MANAN-DANJA<br><br ><br >
+  
+  Ho anao izay maniry te hahazo asa stable no sady gratuit, misy asa en ligne iray ato izay mbola vao nampidirina vao teo mihitsy. Tsy sarotra ny asa atao, efa misy guide video makasika ny inscription sy ny asa atao isan'andro. <br ><br >
+  
+  Midira ao amin'ny section asa gratuit, safidio ny plateforme Ysense. Jereo ny Video fanaovana inscription sy ny asa atao. Tsindrio ny bokitra s'inscrire. <br ><br >
+  </p>
+  <button id="close-notification">Akatona</button>
+</div>
 
+<style>
+  /* Fomba fijery an'ny notification */
+  #notification-bar {
+    background-color: #f39c12; /* Loko mavo matroka */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    width: 50%; /* Ny haben'ny notification */
+    position: fixed;
+    top: 50%; /* Avy eo afovoan'ny pejy mitsangana */
+    left: 50%; /* Avy eo afovoan'ny pejy mitsivalana */
+    transform: translate(-50%, -50%); /* Hanamboatra azy eo afovoany */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Raha tsy tiana ho saronan'ny atiny hafa */
+    border-radius: 10px; /* Mba hampilamina ny zorony */
+  }
+
+  /* Fomba fijery an'ilay bokotra "Akatona" */
+  #close-notification {
+    background-color: #e74c3c; /* Loko mena */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 15px;
+  }
+  #close-notification:hover {
+    background-color: #c0392b; /* Loko mena lalina kokoa rehefa mihetsika ny totozy */
+  }
+  
+  <!-- web3 -->
+  
+ .y{
+     Border-radius :15px ;
+     Border :2px double red;
+     Text-align :center ;
+     Background-color : blue ;
+ }
+ 
+ h1{
+     background-color :red;
+ }
+  
+</style>
+
+<script>
+  // Asehoy ny notification rehefa mandeha ny pejy
+  window.onload = function () {
+    const notificationBar = document.getElementById('notification-bar');
+    notificationBar.style.display = 'block'; // Haseho ny notification
+  };
+
+  // Akatona ny notification rehefa tsindry ny bokotra
+  document.getElementById('close-notification').onclick = function () {
+    const notificationBar = document.getElementById('notification-bar');
+    notificationBar.style.display = 'none'; // Afenina ny notification
+  };
+</script>
+
+
+    
 
 <center >
     <div class="navbar">
