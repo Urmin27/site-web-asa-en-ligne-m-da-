@@ -287,99 +287,10 @@ img {
         }
         
         
-* Styling ny notification eo afovoany */
-    #notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #007bff;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      display: none; /* Tsy miseho raha tsy ilaina */
-      z-index: 1000; /* Atao ambony noho ny zavatra hafa */
-      width: 90%; /* Atao responsive, miankina amin'ny écran */
-      max-width: 400px;
-    }
-    #notification button {
-      background-color: white;
-      color: #007bff;
-      border: none;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    #notification button:hover {
-      background-color: #f1f1f1;
-    }
-    /* Background semi-transparent rehefa miseho ny notification */
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: none;
-      z-index: 999;
-    }
+
        
-       
-       
-       /* Styling ny annonce */
-    #annonce {
-      position: fixed;
-      bottom: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #007bff;
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      width: 90%; /* Ho responsive */
-      max-width: 400px;
-      display: block; /* Mivoaka amin'ny pejy */
-      z-index: 1000; /* Atao ambony noho ny zavatra hafa */
-    }
-
-    #annonce p {
-      margin-bottom: 15px;
-    }
-
-    #annonce button {
-      background-color: white;
-      color: #007bff;
-      border: none;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    #annonce button:hover {
-      background-color: #f1f1f1;
-    }
-
-    /* Button mamela ny fanakatonana */
-    .close-btn {
-      background-color: red;
-      color: white;
-      padding: 10px 15px;
-      margin-top: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .close-btn:hover {
-      background-color: #e60000;
-    }
+      
+    
        
       P{
           Color :white 
@@ -419,34 +330,7 @@ img {
 </style >
 </head >
 </body >
-<div id="notification-bar" style="display: none;">
-        
-  <p>TONGASOA ETO AMIN'NY PLATE-FORME ASA EN LIGNE </p>      
-  
-</div>
 
-<style>
-  /* Fomba fijery an'ny notification */
-  #notification-bar {
-    background-color: #f39c12; /* Loko mavo matroka */
-    color: white;
-    padding: 20px;
-    text-align: center;
-    width: 50%; /* Ny haben'ny notification */
-    position: fixed;
-    top: 50%; /* Avy eo afovoan'ny pejy mitsangana */
-    left: 50%; /Eafa vy eo afovoan'ny pejy mitsivalana */
-    transform: translate(-50%, -50%); /* Hanamboatra azy eo afovoany */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Raha tsy tiana ho saronan'ny atiny hafa */
-    border-radius: 10px; /* Mba hampilamina ny zorony */
-  }
-
-  /* Fomba fijery an'ilay bokotra "Akatona" */
-  #close-notification {
-    background-color: #e74c3c; /* Loko mena */
-    color: white;
-    border: none;
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 5px;
@@ -469,21 +353,10 @@ img {
      background-color :red;
  }
   
-</style>
 
-<script>
-  // Asehoy ny notification rehefa mandeha ny pejy
-  window.onload = function () {
-    const notificationBar = document.getElementById('notification-bar');
-    notificationBar.style.display = 'block'; // Haseho ny notification
-  };
 
-  // Akatona ny notification rehefa tsindry ny bokotra
-  document.getElementById('close-notification').onclick = function () {
-    const notificationBar = document.getElementById('notification-bar');
-    notificationBar.style.display = 'none'; // Afenina ny notification
-  };
-</script>
+
+  
 
 
     
