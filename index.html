@@ -1,8 +1,8 @@
-Tu <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PLATE-FORME ASA EN LIGNE </title>
     <!--Start of Tawk.to Script-->
 
@@ -287,10 +287,99 @@ img {
         }
         
         
-
+* Styling ny notification eo afovoany */
+    #notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      display: none; /* Tsy miseho raha tsy ilaina */
+      z-index: 1000; /* Atao ambony noho ny zavatra hafa */
+      width: 90%; /* Atao responsive, miankina amin'ny écran */
+      max-width: 400px;
+    }
+    #notification button {
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #notification button:hover {
+      background-color: #f1f1f1;
+    }
+    /* Background semi-transparent rehefa miseho ny notification */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 999;
+    }
        
-      
-    
+       
+       
+       /* Styling ny annonce */
+    #annonce {
+      position: fixed;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%; /* Ho responsive */
+      max-width: 400px;
+      display: block; /* Mivoaka amin'ny pejy */
+      z-index: 1000; /* Atao ambony noho ny zavatra hafa */
+    }
+
+    #annonce p {
+      margin-bottom: 15px;
+    }
+
+    #annonce button {
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #annonce button:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Button mamela ny fanakatonana */
+    .close-btn {
+      background-color: red;
+      color: white;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      background-color: #e60000;
+    }
        
       P{
           Color :white 
@@ -329,15 +418,20 @@ img {
 
 </style >
 </head >
-</body >
-
-   
-  
  
+<section >
+    
+    
+
+    
+    
+    
+
+
 <center >
     <div class="navbar">
         <button onclick="showContent('investissement')">🏠accueil </button>
-        <button onclick="showContent(gratuit')">💶asa gratuit </button></button>
+        <button onclick="showContent('gratuit')">💶asa gratuit </button></button>
         <button onclick="showContent('formation')">🖥️HTML </button>
         <button onclick="showContent('depot')">⬇️ Dépôt </button>
         
@@ -346,7 +440,7 @@ img {
     </div>
 </center>
 
- 
+
 
     <div class="content" id="content">
         <h1>TONGASOA ETO AMIN'NY PLATE-FORME ASA EN LIGNE </h1><br ><br ><br >
@@ -393,7 +487,7 @@ img {
     
     
     
-    
+    <div class ="web3">
     
     
                       <h1 style="color :red">🌍WEB3 GPT🌎  </h1><br >
@@ -423,6 +517,10 @@ img {
     </span>
 </div><br ><br ><br >
 <center >
+    </div>
+    
+    <!-- support finance -->
+    
     
    <h1 style="color: red "> 💶SUPPORT FINANCE💶 </h1>
    <p style="color: yellow ">Nisy nilaza fa tapaka ny SUPPORT FINANCE, tsia mandeha tsara ny SUPPORT FINANCE. Nanova domaine kely ihany izy ireo. Noho izany raha efa tsy miasa intsony ilay lien teo aloha fa efa nanova nanova domaine vaovao izy ireo. Noho izany, raha efa manana SUPPORT FINANCE ianao dia tsindrio ny BOUTON SE CONNECTER eto ambany. Raha mbola hanao inscription kosa dia tsindrio ny BOUTON S'INSCRIRE. Misy ihany koa manana olona amin'ny asa andavan'andro, izany hoe, misy soratra CONDITION NON SATISFAITE. Raha manana izany olana izany ianao, dia manasa anao aho hikitika ny BOUTON SOLUTION eto ambany. Izahay dia vonona hamaha ny olana rehetra mety hitranga. </p><br ><br >
@@ -446,7 +544,21 @@ img {
    </center>
    
    
-         <h1 style  ="color :red">💲💶GDQ-WEB3💶💲</h1> <br >
+    
+    
+    
+    
+</center>
+
+
+
+
+
+
+
+
+
+                        <h1 style  ="color :red">💲💶GDQ-WEB3💶💲</h1> <br >
                         
                       <center >
         
@@ -454,7 +566,8 @@ img {
     </center>  
                         
                         
-                        <p style ="background-color :yellow ">Ity indray site vaovao, nivoaka amin'ity taona 2025 ity. Izahay dia manome garantie ho an'i mpanaraka anay fa maharitra 10mois ity site ity. Hararaoty foana rehefa misy zavatra vaovao mivoaka toy izao, aza miandry efa 7mois nivoahany izay vao hanomboka hanao an'ilay izy. Izao no fotoana izay afahanao manomboka sady mbola tsy misy risque de perte mihits, raha izao ianao no hanomboka hanao an'ilay izy. Harao eto ambany ny plan d'investissement. </p>
+                        <p style ="background-color :yellow ">FILAZANA MANAN-DANJA
+ </p>
                         
                         <h3>PLAN D'INVESTISSEMENT </h3><br >
                         <p>👉 Depot 10$~29$⏭️ gains 1.3% . Mahazo 2 tâche par jours. </p><br >
@@ -486,7 +599,29 @@ img {
                 case 'gratuit':
                     contentHTML = `
                     
-               <h1 style ="text-align:center ; color red;">YSENSE</h1><br ><br >
+                    
+    
+    
+    
+                    <center >
+        
+        <img src="https://media.tenor.com/JX-KI9Kz_GIAAAAM/for-free-adam-sandler.gif " alt="Bienvenu" style="max-width:100%; height:auto;">  
+    </center>
+                        <center>
+                           
+                        <li style ="color :green ">IPWEB</li><b><br >
+                        
+                        <p style ="background-color :green">Tsindrio bokitra s'inscrire, raha hanao inscription. Tsindrio ny bokitra rejoindre le groupe raha te hahazo fampianarana gratuit ianao. <br><b><br>
+                        
+                Raha manana olana amin'ny fidirana ianao dia manasa anao izahay hiresaka amin'ny servce client eo ambany <br><br >     </p>
+                        
+                        <a href="https://www.ipweb.pro/?Horlando27"> s'inscrire</a>
+                        <a href="https://m.me/j/AbbjX0YBmpokejn8/">Rejoindre le groupe </a><br ><br > <br ><br >
+                        
+                        
+    <section class="y">
+    <div class ="y">
+    <h1 style ="text-align:center ; color red;">YSENSE</h1><br ><br >
        <div class="1">
            
             <a href="https://www.ysense.com/?rb=204403268">s'inscrire</a> <br ><br ><br >
@@ -501,7 +636,7 @@ img {
   allowfullscreen>
 </iframe><br ><br ><br >
 
-<a href="">JEREO NY ASA ISAN'ANDRO</a><br ><br ><br >
+<a href="">JEREO NY TUTO ASA ATAO ISAN'ANDRO </a><br ><br ><br >
 
 <iframe 
   width="220" 
@@ -540,11 +675,12 @@ Olana mety hitranga: <br ><br >
 - Ny fahafaha-mameno surveys dia miankina amin'ny toerana misy anao sy ny mombamomba anao.  <br ><br >
  
 
-Raha liana ianao dia afaka mitsidika ny tranonkalany ao amin'ny **ysense.com** ary mamorona kaonty maimaimpoana. Te hanandrana ve ianao? Mila fanampiana ve amin'ny fisoratana anarana? </p>     
-    
-    
-    
-                    
+Raha liana ianao dia afaka mitsidika ny tranonkalany ao amin'ny **ysense.com** ary mamorona kaonty maimaimpoana. Te hanandrana ve ianao? Mila fanampiana ve amin'ny fisoratana anarana? </p>
+        </div>
+               </section>         
+                        <a href="https://m.me/j/AbbGb9ljGG_pAZZ6/">Rejoindre le groupe </a><br ><br >
+                        </center>
+                        <div class="bot">
         <a href="https://bot-site-web-asa-en-ligne-mada.vercel.app/">CHAT BOT </a>
     
     
@@ -784,7 +920,30 @@ Raha te hanohy amin'ny sehatra hafa ianao, toy ny JavaScript, backend developmen
 </script>
 
    </script>
-   
+   <!-- Message bubble button -->
+<div id="message-bubble" onclick="showToast()" style="position: fixed; right: 20px; top: 20px; background-color: #007bff; color: white; padding: 15px; border-radius: 50%; cursor: pointer; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
+  💬
+</div>
+
+<!-- Notification container -->
+<div id="toast-container" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; display: none;">
+  <div id="toast-message">Notification kely!</div>
+  <button id="close-toast" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">X</button>
+</div>
+
+<script>
+// Fampisehoana ny notification
+function showToast() {
+  var toast = document.getElementById("toast-container");
+  toast.style.display = "block";
+}
+
+// Fampihetsika ny bokotra "Akatona"
+document.getElementById("close-toast").onclick = function() {
+  document.getElementById("toast-container").style.display = "none";
+}
+</script>
+ 
 <!-- Message bubble button -->
 <div id="message-bubble" onclick="showMessageBox()" style="position: fixed; bottom: 20px; left: 20px; background-color: #007bff; color: white; padding: 15px; border-radius: 50%; cursor: pointer; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);">
   🔔
@@ -900,3 +1059,17 @@ function closeMessageBox() {
  
 <!-- diaproam -->
 </html >
+
+    
+
+        
+
+
+
+                 
+        
+     
+    
+
+
+  
