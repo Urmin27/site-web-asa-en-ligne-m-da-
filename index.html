@@ -513,6 +513,41 @@ img {
     background: darkred;
 }
 
+<!-- annonce 1-->
+
+body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+        }
+        .annonce {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: inline-block;
+            position: relative;
+            max-width: 400px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .annonce a {
+            color: yellow;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .annonce button {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        } 
+
 </style >
 </head >
 <body >
@@ -542,6 +577,21 @@ img {
     document.getElementById("announcement").style.display = "none";
 }
 </script>
+<div class="annonce" id="annonceBox">
+        <button onclick="fermerAnnonce()">X</button>
+        <h2><strong>ROBOT TRADING DERIV </strong></h2>
+        <p>Salama tompoko, te hanao trading miaraka amin'ny robot deriv ve inao? Manasa anao izahay mba hikitika ny bokitra Robot deriv eto ambanh. : <br ><br >
+            <a href="https://boutique-robot-deriv-asa-en-ligne-m-da-delta.vercel.app/?fbclid=IwZXh0bgNhZW0CMTEAAR0jlfuOQWGA2BaQ4PC8_OKOOTrdvDyYRCOFGQ8SFnql7F2e4HiFSScTgZI_aem_JuU8UkHEQjmK4qENfcqCrA/" target="_blank">Robot deriv </a>
+        </p>
+    </div>
+
+    <script>
+        function fermerAnnonce() {
+            document.getElementById("annonceBox").style.display = "none";
+        }
+    </script>
+
+
 <section >
     
   
