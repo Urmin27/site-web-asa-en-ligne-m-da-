@@ -1,81 +1,21 @@
 <!DOCTYPE html>
-<html lang="mg">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overture Porte Animation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background-color: black;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        /* Sarona amin'ny varavarana roa */
-        .container {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: black;
-            z-index: 9999;
-        }
-        .door {
-            width: 50%;
-            height: 100%;
-            background: #007bff;
-            position: absolute;
-            transition: transform 2.5s ease-in-out;
-        }
-        .left-door {
-            left: 0;
-            transform-origin: left;
-        }
-        .right-door {
-            right: 0;
-            transform-origin: right;
-        }
-        /* Style an'ilay soratra */
-        .welcome-text {
-            position: absolute;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+    <title>Titre de la page</title>
+    
+    <style >
+        
+        p{
+            border-radius :50px;
+            border : 5px double yellow ;
+            Color : white ;
+            background-color :blue ;
+            text-align :center ;
         }
     </style>
 </head>
 <body>
-
-    <div class="container" id="overtureBox">
-        <div class="door left-door"></div>
-        <div class="door right-door"></div>
-        <div class="welcome-text" id="welcomeText">BIENVENUE DANS LA PLATE-FORME ASA EN LIGNE</div>
-    </div>
-
-    <script>
-        setTimeout(function() {
-            document.querySelector(".left-door").style.transform = "translateX(-100%)";
-            document.querySelector(".right-door").style.transform = "translateX(100%)";
-            document.getElementById("welcomeText").style.opacity = "1"; // Mampiseho ilay text
-        }, 1000); // Fanombohan'ny animation 1 segondra aorian'ny fidirana amin'ny pejy
-
-        setTimeout(function() {
-            document.getElementById("welcomeText").style.opacity = "0"; // Atao manjavona ilay text
-        }, 2500); // Mijanona 1.5 segondra ilay text dia manjavona
-
-        setTimeout(function() {
-            window.location.href = "https://site-web-asa-en-ligne-m-da-6fzi.vercel.app/";
-        }, 3500); // Hialana amin'ny animation ary ho alefa amin'ny site aorian'ny 3.5 segondra
-    </script>
-
+    <p>Salama tompoko, mbola manao mise à jour kely izahay eto amin'ny plate-forme ASA EN LIGNE, ka mangataka faharetana kely. Miverena rehefa afaka fotoana fohy. Misaotra anao manaraka tsy tapaka anay </p>
 </body>
 </html>
