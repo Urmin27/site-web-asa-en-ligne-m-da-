@@ -11,16 +11,14 @@
         input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
         button { background-color: blue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background-color: darkblue; }
-        #connexionForm, #logoutButton, #userListSection { display: none; }
+        #connexionForm, #logoutButton { display: none; }
         #userInfo { font-size: 18px; color: green; margin-top: 20px; }
-        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 10px; text-align: center; }
-        th { background-color: #4CAF50; color: white; }
     </style>
 </head>
 <body>
 
-    <h1 style ="color :blue ; border :2px solid black ; border-radius :15px; background-color: orange ;">BIENVENUE SUR LA PLATE-FORME ASA EN LIGNE </h2>
+    <h1 style ="color:blue ;background-color :orange; border :2px solid black ; border-radius :15px; text-align :center ;">BIENVENUE SUR LA PLATE-FORME ASA EN LIGNE </h1>
+    <h3 style ="color:red ;background-color :blue ; border :2px solid black ; border-radius :15px; text-align :center ;" >inscription </h3>
     <form id="inscriptionForm">
         <input type="text" id="nom" placeholder="Votre Nom" required><br>
         <input type="email" id="email" placeholder="Votre Email" required><br>
@@ -33,7 +31,8 @@
     <button onclick="afficherConnexion()">Se connecter </button>
 
     <form id="connexionForm">
-        <h2>Connexion</h2>
+        
+        <h2 style ="color:blue ;background-color :orange; border :2px solid black ; border-radius :15px; text-align :center ;">Connection</h2>
         <input type="email" id="loginEmail" placeholder="Votre Email" required><br>
         <input type="password" id="loginPassword" placeholder="Votre Mot de passe" required><br>
         <label><input type="checkbox" id="rememberMe"> Se souvenir de moi</label><br>
@@ -45,21 +44,8 @@
 
     <div id="userInfo"></div>
 
-    <button onclick="toggleUserList()">Voir la liste des utilisateurs</button>
-
-    <div id="userListSection">
-        <h3>Liste des utilisateurs inscrits :</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody"></tbody>
-        </table>
-    </div>
-
+    <br>
+    
     <script>
         function inscrire() {
             let nom = document.getElementById("nom").value;
@@ -85,7 +71,6 @@
             alert("Inscription réussie!");
             document.getElementById("inscriptionForm").reset();
             afficherConnexion();
-            afficherListeUtilisateurs(); 
         }
 
         function afficherConnexion() {
@@ -110,7 +95,6 @@
                 }
 
                 window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app//";
-                afficherNomUtilisateur(utilisateur.nom);
             } else {
                 alert("Email ou mot de passe incorrect!");
             }
@@ -122,57 +106,6 @@
             alert("Déconnexion réussie!");
             location.reload();
         }
-
-        function motDePasseOublie() {
-            let email = prompt("Entrez votre email pour réinitialiser le mot de passe:");
-            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            let utilisateur = utilisateurs.find(user => user.email === email);
-
-            if (utilisateur) {
-                let newPassword = prompt("Entrez un nouveau mot de passe:");
-                if (newPassword) {
-                    utilisateur.password = newPassword;
-                    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
-                    alert("Mot de passe modifié avec succès!");
-                }
-            } else {
-                alert("Email introuvable!");
-            }
-        }
-
-        function verifierSession() {
-            let sessionUser = localStorage.getItem("sessionUser") || sessionStorage.getItem("sessionUser");
-            if (sessionUser) {
-                document.getElementById("connexionForm").style.display = "none";
-                document.getElementById("inscriptionForm").style.display = "none";
-                document.getElementById("logoutButton").style.display = "block";
-                let utilisateur = JSON.parse(sessionUser);
-                afficherNomUtilisateur(utilisateur.nom);
-            }
-        }
-
-        function afficherNomUtilisateur(nom) {
-            document.getElementById("userInfo").innerHTML = "Bienvenue, " + nom + "!";
-        }
-
-        function afficherListeUtilisateurs() {
-            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            let userTableBody = document.getElementById("userTableBody");
-            userTableBody.innerHTML = "";
-
-            utilisateurs.forEach(function(utilisateur) {
-                let row = `<tr><td>${utilisateur.nom}</td><td>${utilisateur.email}</td></tr>`;
-                userTableBody.innerHTML += row;
-            });
-        }
-
-        function toggleUserList() {
-            let userListSection = document.getElementById("userListSection");
-            userListSection.style.display = userListSection.style.display === "none" || userListSection.style.display === "" ? "block" : "none";
-            afficherListeUtilisateurs();
-        }
-
-        verifierSession();
     </script>
 
 </body>
