@@ -11,15 +11,16 @@
         input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
         button { background-color: blue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background-color: darkblue; }
-        #listeUtilisateurs { margin-top: 20px; padding: 10px; background: white; width: 50%; margin: auto; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
-        #connexionForm, #logoutButton { display: none; } /* Miafina amin'ny voalohany */
-        a { display: block; margin-top: 10px; color: blue; cursor: pointer; }
+        #connexionForm, #logoutButton, #userListSection { display: none; }
         #userInfo { font-size: 18px; color: green; margin-top: 20px; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; text-align: center; }
+        th { background-color: #4CAF50; color: white; }
     </style>
 </head>
 <body>
 
-    <h2>Inscription</h2>
+    <h1 style ="color :blue ; border :2px solid black ; border-radius :15px; background-color: orange ;">BIENVENUE SUR LA PLATE-FORME ASA EN LIGNE </h2>
     <form id="inscriptionForm">
         <input type="text" id="nom" placeholder="Votre Nom" required><br>
         <input type="email" id="email" placeholder="Votre Email" required><br>
@@ -29,27 +30,34 @@
 
     <br>
 
-    <!-- Bouton S'inscrire, mis Hidden hatramin'ny tsindry -->
     <button onclick="afficherConnexion()">Se connecter </button>
 
-    <!-- Formulaire de Connexion -->
     <form id="connexionForm">
         <h2>Connexion</h2>
         <input type="email" id="loginEmail" placeholder="Votre Email" required><br>
         <input type="password" id="loginPassword" placeholder="Votre Mot de passe" required><br>
         <label><input type="checkbox" id="rememberMe"> Se souvenir de moi</label><br>
         <button type="button" onclick="connecter()">Se connecter</button>
-        <a onclick="motDePasseOublie()">Mot de passe oublié?</a>
+        <a href="#" onclick="motDePasseOublie()">Mot de passe oublié?</a>
     </form>
 
     <button id="logoutButton" onclick="deconnecter()">Déconnexion</button>
 
     <div id="userInfo"></div>
 
-    <!-- Liste des Utilisateurs -->
-    <div id="listeUtilisateurs">
+    <button onclick="toggleUserList()">Voir la liste des utilisateurs</button>
+
+    <div id="userListSection">
         <h3>Liste des utilisateurs inscrits :</h3>
-        <ul id="utilisateursListe"></ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+        </table>
     </div>
 
     <script>
@@ -77,12 +85,11 @@
             alert("Inscription réussie!");
             document.getElementById("inscriptionForm").reset();
             afficherConnexion();
-            afficherListeUtilisateurs(); // Mise à jour de la liste des utilisateurs
+            afficherListeUtilisateurs(); 
         }
 
         function afficherConnexion() {
-            let formConnexion = document.getElementById("connexionForm");
-            formConnexion.style.display = (formConnexion.style.display === "none" || formConnexion.style.display === "") ? "block" : "none";
+            document.getElementById("connexionForm").style.display = "block";
         }
 
         function connecter() {
@@ -148,17 +155,21 @@
             document.getElementById("userInfo").innerHTML = "Bienvenue, " + nom + "!";
         }
 
-        // Mise à jour de la liste des utilisateurs inscrits
         function afficherListeUtilisateurs() {
             let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            let utilisateursListe = document.getElementById("utilisateursListe");
-            utilisateursListe.innerHTML = ""; // Vider la liste avant de la remplir
+            let userTableBody = document.getElementById("userTableBody");
+            userTableBody.innerHTML = "";
 
             utilisateurs.forEach(function(utilisateur) {
-                let li = document.createElement("li");
-                li.textContent = "Nom: " + utilisateur.nom + ", Email: " + utilisateur.email;
-                utilisateursListe.appendChild(li);
+                let row = `<tr><td>${utilisateur.nom}</td><td>${utilisateur.email}</td></tr>`;
+                userTableBody.innerHTML += row;
             });
+        }
+
+        function toggleUserList() {
+            let userListSection = document.getElementById("userListSection");
+            userListSection.style.display = userListSection.style.display === "none" || userListSection.style.display === "" ? "block" : "none";
+            afficherListeUtilisateurs();
         }
 
         verifierSession();
