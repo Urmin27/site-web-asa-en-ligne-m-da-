@@ -2,66 +2,167 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Titre de la page</title>
-    <style >.door-container {
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    background-color: #1a1a1a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    z-index: 9999;
-}
-
-.door {
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    background-color: #000;
-    top: 0;
-    transition: transform 2s ease-in-out;
-}
-
-.left-door {
-    left: 0;
-    transform-origin: left;
-}
-
-.right-door {
-    right: 0;
-    transform-origin: right;
-}
-
-.welcome-text {
-    position: absolute;
-    font-size: 2em;
-    color: white;
-    opacity: 0;
-    transition: opacity 1s ease-in-out 1s;
-}
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription & Connexion</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f2f2f2; }
+        h2 { color: #333; }
+        form { width: 300px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: blue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: darkblue; }
+        #listeUtilisateurs { margin-top: 20px; padding: 10px; background: white; width: 50%; margin: auto; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        #connexionForm, #logoutButton { display: none; } /* Miafina amin'ny voalohany */
+        a { display: block; margin-top: 10px; color: blue; cursor: pointer; }
+        #userInfo { font-size: 18px; color: green; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <div class="door-container">
-    <div class="door left-door"></div>
-    <div class="door right-door"></div>
-    <h1 class="welcome-text">BIENVENUE SUR NOTRE PAGE</h1>
-</div>
-<script >
-document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(() => {
-        document.querySelector(".left-door").style.transform = "translateX(-100%)";
-        document.querySelector(".right-door").style.transform = "translateX(100%)";
-        document.querySelector(".welcome-text").style.opacity = "1";
-    }, 500);
 
-    // Redirect automatique après 3 secondes
-    setTimeout(() => {
-        window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
-    }, 3000);
-});
-</script >
+    <h2>Inscription</h2>
+    <form id="inscriptionForm">
+        <input type="text" id="nom" placeholder="Votre Nom" required><br>
+        <input type="email" id="email" placeholder="Votre Email" required><br>
+        <input type="password" id="password" placeholder="Votre Mot de passe" required><br>
+        <button type="button" onclick="inscrire()">S'inscrire</button>
+    </form>
+
+    <br>
+
+    <!-- Bouton S'inscrire, mis Hidden hatramin'ny tsindry -->
+    <button onclick="afficherConnexion()">Se connecter </button>
+
+    <!-- Formulaire de Connexion -->
+    <form id="connexionForm">
+        <h2>Connexion</h2>
+        <input type="email" id="loginEmail" placeholder="Votre Email" required><br>
+        <input type="password" id="loginPassword" placeholder="Votre Mot de passe" required><br>
+        <label><input type="checkbox" id="rememberMe"> Se souvenir de moi</label><br>
+        <button type="button" onclick="connecter()">Se connecter</button>
+        <a onclick="motDePasseOublie()">Mot de passe oublié?</a>
+    </form>
+
+    <button id="logoutButton" onclick="deconnecter()">Déconnexion</button>
+
+    <div id="userInfo"></div>
+
+    <!-- Liste des Utilisateurs -->
+    <div id="listeUtilisateurs">
+        <h3>Liste des utilisateurs inscrits :</h3>
+        <ul id="utilisateursListe"></ul>
+    </div>
+
+    <script>
+        function inscrire() {
+            let nom = document.getElementById("nom").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            if (!nom || !email || !password) {
+                alert("Fenoy azafady ny champ rehetra!");
+                return;
+            }
+
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let dejaExiste = utilisateurs.some(user => user.email === email);
+
+            if (dejaExiste) {
+                alert("Email efa ampiasaina!");
+                return;
+            }
+
+            utilisateurs.push({ nom, email, password });
+            localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+
+            alert("Inscription réussie!");
+            document.getElementById("inscriptionForm").reset();
+            afficherConnexion();
+            afficherListeUtilisateurs(); // Mise à jour de la liste des utilisateurs
+        }
+
+        function afficherConnexion() {
+            let formConnexion = document.getElementById("connexionForm");
+            formConnexion.style.display = (formConnexion.style.display === "none" || formConnexion.style.display === "") ? "block" : "none";
+        }
+
+        function connecter() {
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+            let rememberMe = document.getElementById("rememberMe").checked;
+
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let utilisateur = utilisateurs.find(user => user.email === email && user.password === password);
+
+            if (utilisateur) {
+                alert("Connexion réussie! Bienvenue, " + utilisateur.nom);
+                
+                if (rememberMe) {
+                    localStorage.setItem("sessionUser", JSON.stringify(utilisateur));
+                } else {
+                    sessionStorage.setItem("sessionUser", JSON.stringify(utilisateur));
+                }
+
+                window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app//";
+                afficherNomUtilisateur(utilisateur.nom);
+            } else {
+                alert("Email ou mot de passe incorrect!");
+            }
+        }
+
+        function deconnecter() {
+            localStorage.removeItem("sessionUser");
+            sessionStorage.removeItem("sessionUser");
+            alert("Déconnexion réussie!");
+            location.reload();
+        }
+
+        function motDePasseOublie() {
+            let email = prompt("Entrez votre email pour réinitialiser le mot de passe:");
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let utilisateur = utilisateurs.find(user => user.email === email);
+
+            if (utilisateur) {
+                let newPassword = prompt("Entrez un nouveau mot de passe:");
+                if (newPassword) {
+                    utilisateur.password = newPassword;
+                    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+                    alert("Mot de passe modifié avec succès!");
+                }
+            } else {
+                alert("Email introuvable!");
+            }
+        }
+
+        function verifierSession() {
+            let sessionUser = localStorage.getItem("sessionUser") || sessionStorage.getItem("sessionUser");
+            if (sessionUser) {
+                document.getElementById("connexionForm").style.display = "none";
+                document.getElementById("inscriptionForm").style.display = "none";
+                document.getElementById("logoutButton").style.display = "block";
+                let utilisateur = JSON.parse(sessionUser);
+                afficherNomUtilisateur(utilisateur.nom);
+            }
+        }
+
+        function afficherNomUtilisateur(nom) {
+            document.getElementById("userInfo").innerHTML = "Bienvenue, " + nom + "!";
+        }
+
+        // Mise à jour de la liste des utilisateurs inscrits
+        function afficherListeUtilisateurs() {
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let utilisateursListe = document.getElementById("utilisateursListe");
+            utilisateursListe.innerHTML = ""; // Vider la liste avant de la remplir
+
+            utilisateurs.forEach(function(utilisateur) {
+                let li = document.createElement("li");
+                li.textContent = "Nom: " + utilisateur.nom + ", Email: " + utilisateur.email;
+                utilisateursListe.appendChild(li);
+            });
+        }
+
+        verifierSession();
+    </script>
+
 </body>
 </html>
