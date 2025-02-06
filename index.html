@@ -72,7 +72,7 @@ th, td {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site web asa en ligne Mäda </title>
+    <title>Inscription & Connexion</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -199,5 +199,31 @@ function deconnecter() {
     alert("Déconnecté !");
     location.reload();
 }
+
+
+
+
+
+function afficherUtilisateurs() {
+    let code = prompt("Entrez le code d'accès :");
+    
+    if (code !== "080600") {
+        alert("Code incorrect !");
+        return;
+    }
+
+    let tableau = document.getElementById("tableauUtilisateurs");
+    tableau.style.display = "table";
+
+    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+    tableau.innerHTML = "<tr><th>Nom</th><th>Email</th></tr>"; // Tsy asiana mot de passe
+
+    utilisateurs.forEach(user => {
+        let row = tableau.insertRow();
+        row.insertCell(0).innerText = user.nom;
+        row.insertCell(1).innerText = user.email;
+    });
+}
+
  </script>
 </html>
