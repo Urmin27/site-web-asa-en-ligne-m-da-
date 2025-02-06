@@ -1,229 +1,207 @@
 <!DOCTYPE html>
 <html lang="fr">
-    
-    <style >
-        body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color :green ;
-}
-
-#container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 300px;
-}
-
-input {
-    width: 90%;
-    padding: 8px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-button {
-    background: blue;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 5px;
-}
-
-button:hover {
-    background: darkblue;
-}
-
-p {
-    color: blue;
-    cursor: pointer;
-}
-
-#tableauUtilisateurs {
-    display: none;
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    border: 1px solid black;
-    padding: 5px;
-}
-
-#connexion, #motOublie {
-    display: none;
-}
-
-#deconnexion {
-    display: none;
-}
-
-    </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription & Connexion</title>
-    <link rel="stylesheet" href="style.css">
+    <title>site web asa en ligne mada </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            color: black;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: blue;
+            color: white;
+            cursor: pointer;
+        }
+        .switch {
+            margin-top: 10px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        table {
+            margin: auto;
+            width: 50%;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="container">
-        <div id="inscription">
-            <h2>Inscription</h2>
-            <input type="text" id="inscriptionNom" placeholder="Nom d'utilisateur">
-            <input type="email" id="inscriptionEmail" placeholder="Email">
-            <input type="password" id="inscriptionMdp" placeholder="Mot de passe">
-            <button onclick="inscrire()">S'inscrire</button>
-            <p onclick="afficherConnexion()">Déjà inscrit ? Se connecter</p>
-        </div>
+    <h2 style ="color : white ; background-color :blue ;border-radius :15px ;border :1px solid black ; text-align :center ;">BIENVENUE SUR LA PLATE-FORME ASA EN LIGNE MAD </h2>
 
-        <div id="connexion">
-            <h2>Connexion</h2>
-            <input type="text" id="connexionNom" placeholder="Nom d'utilisateur">
-            <input type="password" id="connexionMdp" placeholder="Mot de passe">
-            <button onclick="connecter()">Se connecter</button>
-            <p onclick="afficherMotOublie()">Mot de passe oublié ?</p>
-        </div>
+    <form id="formInscription">
+        <h3>Inscription</h3>
+        <input type="text" id="nom" placeholder="Nom" required>
+        <input type="email" id="email" placeholder="Email (@gmail.com)" required>
+        <input type="password" id="password" placeholder="Mot de passe" required>
+        <button type="button" onclick="inscrire()">S'inscrire</button>
+        <p class="switch" onclick="switchToLogin()">Déjà inscrit ? Se connecter</p>
+    </form>
 
-        <div id="motOublie">
-            <h2>Mot de passe oublié</h2>
-            <input type="email" id="mdpOublieEmail" placeholder="Entrez votre email">
-            <button onclick="afficherMdp()">Afficher le mot de passe</button>
-            <p onclick="afficherConnexion()">Retour à la connexion</p>
-            <p id="mdpAffiche"></p>
-        </div>
+    <form id="formConnexion" class="hidden">
+        <h3>Connexion</h3>
+        <input type="email" id="emailConnexion" placeholder="Email" required>
+        <input type="password" id="passwordConnexion" placeholder="Mot de passe" required>
+        <button type="button" onclick="connecter()">Se connecter</button>
+        <button type="button" onclick="motDePasseOublie()">Mot de passe oublié</button>
+    </form>
 
-        <button id="voirUtilisateurs" onclick="afficherUtilisateurs()">Voir la liste des utilisateurs</button>
+    <button onclick="verifierCode()">Voir liste des utilisateurs</button>
+
+    <div id="listeUtilisateurs" class="hidden">
+        <h3>Liste des utilisateurs</h3>
         <table id="tableauUtilisateurs">
             <tr>
                 <th>Nom</th>
                 <th>Email</th>
-                <th>Mot de passe</th>
+                <th>Action</th>
             </tr>
         </table>
-
-        <button id="deconnexion" onclick="deconnecter()">Se déconnecter</button>
     </div>
 
     <script src="script.js"></script>
 </body>
-<script >function inscrire() {
-    let nom = document.getElementById("inscriptionNom").value;
-    let email = document.getElementById("inscriptionEmail").value;
-    let mdp = document.getElementById("inscriptionMdp").value;
+<script >document.addEventListener("DOMContentLoaded", function() {
+    afficherUtilisateurs();
+});
 
-    if (nom && email && mdp) {
-        let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+function inscrire() {
+    let nom = document.getElementById("nom").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value.trim();
 
-        // Vérifier si l'email est déjà utilisé
-        let existe = utilisateurs.find(user => user.email === email);
-        if (existe) {
-            alert("Email déjà utilisé !");
-            return;
-        }
+    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
 
-        utilisateurs.push({ nom, email, mdp });
-        localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
-
-        alert("Inscription réussie !");
-        afficherConnexion();
-    } else {
+    if (nom === "" || email === "" || password === "") {
         alert("Veuillez remplir tous les champs !");
+        return;
     }
+
+    if (!email.endsWith("@gmail.com")) {
+        alert("Veuillez entrer une adresse email valide (@gmail.com) !");
+        return;
+    }
+
+    let existe = utilisateurs.find(user => user.email === email || user.nom === nom);
+    if (existe) {
+        alert("Cet email ou nom est déjà enregistré !");
+        return;
+    }
+
+    utilisateurs.push({ nom, email, password });
+    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+
+    alert("Inscription réussie !");
+    document.getElementById("formInscription").classList.add("hidden");
+    document.getElementById("formConnexion").classList.remove("hidden");
+
+    afficherUtilisateurs();
 }
 
 function connecter() {
-    let nom = document.getElementById("connexionNom").value;
-    let mdp = document.getElementById("connexionMdp").value;
+    let email = document.getElementById("emailConnexion").value;
+    let password = document.getElementById("passwordConnexion").value;
 
     let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    let utilisateur = utilisateurs.find(user => user.nom === nom && user.mdp === mdp);
+    let utilisateur = utilisateurs.find(user => user.email === email && user.password === password);
 
     if (utilisateur) {
-        localStorage.setItem("connecte", nom);
         alert("Connexion réussie !");
         window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
     } else {
-        alert("Nom d'utilisateur ou mot de passe incorrect !");
+        alert("Email ou mot de passe incorrect !");
     }
 }
 
-function afficherMotOublie() {
-    document.getElementById("connexion").style.display = "none";
-    document.getElementById("motOublie").style.display = "block";
-}
-
-function afficherMdp() {
-    let email = document.getElementById("mdpOublieEmail").value;
+function motDePasseOublie() {
+    let email = prompt("Entrez votre email :");
     let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
     let utilisateur = utilisateurs.find(user => user.email === email);
 
     if (utilisateur) {
-        document.getElementById("mdpAffiche").innerText = "Votre mot de passe est : " + utilisateur.mdp;
+        alert("Votre mot de passe est : " + utilisateur.password);
     } else {
-        document.getElementById("mdpAffiche").innerText = "Email introuvable.";
+        alert("Email non trouvé !");
     }
 }
 
-function afficherConnexion() {
-    document.getElementById("inscription").style.display = "none";
-    document.getElementById("connexion").style.display = "block";
-}
-
-function afficherUtilisateurs() {
-    let tableau = document.getElementById("tableauUtilisateurs");
-    tableau.style.display = "table";
-
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    tableau.innerHTML = "<tr><th>Nom</th><th>Email</th><th>Mot de passe</th></tr>";
-
-    utilisateurs.forEach(user => {
-        let row = tableau.insertRow();
-        row.insertCell(0).innerText = user.nom;
-        row.insertCell(1).innerText = user.email;
-        row.insertCell(2).innerText = user.mdp;
-    });
-}
-
-function deconnecter() {
-    localStorage.removeItem("connecte");
-    alert("Déconnecté !");
-    location.reload();
-}
-
-
-
-
-
-function afficherUtilisateurs() {
+function verifierCode() {
     let code = prompt("Entrez le code d'accès :");
-    
-    if (code !== "080600") {
+
+    if (code === "080600") {
+        document.getElementById("listeUtilisateurs").classList.remove("hidden");
+        afficherUtilisateurs();
+    } else {
         alert("Code incorrect !");
-        return;
     }
+}
 
-    let tableau = document.getElementById("tableauUtilisateurs");
-    tableau.style.display = "table";
-
+function afficherUtilisateurs() {
     let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    tableau.innerHTML = "<tr><th>Nom</th><th>Email</th></tr>"; // Tsy asiana mot de passe
+    let tableau = document.getElementById("tableauUtilisateurs");
 
-    utilisateurs.forEach(user => {
+    tableau.innerHTML = `
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+    utilisateurs.forEach((user, index) => {
         let row = tableau.insertRow();
         row.insertCell(0).innerText = user.nom;
         row.insertCell(1).innerText = user.email;
+
+        let btnDelete = document.createElement("button");
+        btnDelete.innerText = "Effacer";
+        btnDelete.onclick = function() {
+            supprimerUtilisateur(index);
+        };
+        row.insertCell(2).appendChild(btnDelete);
     });
 }
 
+function supprimerUtilisateur(index) {
+    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+    utilisateurs.splice(index, 1);
+    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+    afficherUtilisateurs();
+}
+
+// Fonction de changement de formulaire
+function switchToLogin() {
+    document.getElementById("formInscription").classList.add("hidden");
+    document.getElementById("formConnexion").classList.remove("hidden");
+}
  </script>
 </html>
