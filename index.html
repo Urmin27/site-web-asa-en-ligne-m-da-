@@ -1,207 +1,215 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>site web asa en ligne mada </title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            color: white;
-        }
-        form {
-            background: white;
-            padding: 20px;
-            width: 300px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            color: black;
-            margin-bottom: 20px;
-        }
-        input, button {
-            width: 100%;
-            margin: 5px 0;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-        button {
-            background: blue;
-            color: white;
-            cursor: pointer;
-        }
-        .switch {
-            margin-top: 10px;
-            cursor: pointer;
-            color: blue;
-            text-decoration: underline;
-        }
-        table {
-            margin: auto;
-            width: 50%;
-            border-collapse: collapse;
-            background: white;
-            color: black;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 10px;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription & Connexion - Asa En Ligne</title>
+  <!-- Firebase & Authentification -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    
+    // Configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCK4HqGSjYRT2jFNhAvniSWIzhDvEb2qAQ",
+      authDomain: "asa-en-ligne.firebaseapp.com",
+      projectId: "asa-en-ligne",
+      storageBucket: "asa-en-ligne.firebasestorage.app",
+      messagingSenderId: "58359363245",
+      appId: "1:58359363245:web:ca5969776ce9cd86aef824",
+      measurementId: "G-MRVHVWPV71"
+    };
+    
+    // Initialisation de Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    
+    // Captcha pour l'inscription
+    let captchaResultRegister;
+    function generateRegisterCaptcha() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      captchaResultRegister = num1 + num2;
+      const challengeElem = document.getElementById("register-captcha-challenge");
+      if(challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+    }
+    
+    // Captcha pour la connexion
+    let captchaResultLogin;
+    function generateLoginCaptcha() {
+      const num1 = Math.floor(Math.random() * 10) + 1;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      captchaResultLogin = num1 + num2;
+      const challengeElem = document.getElementById("login-captcha-challenge");
+      if(challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+    }
+    
+    window.addEventListener("DOMContentLoaded", () => {
+      generateRegisterCaptcha();
+      generateLoginCaptcha();
+    });
+    
+    // Fonction d'inscription
+    window.registerUser = function() {
+      const fullName = document.getElementById("full-name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+      const captchaAnswer = parseInt(document.getElementById("register-captcha-answer").value);
+      
+      if(password !== confirmPassword) {
+        alert("Les mots de passe ne correspondent pas.");
+        return;
+      }
+      if(captchaAnswer !== captchaResultRegister) {
+        alert("Captcha incorrect. Veuillez réessayer.");
+        generateRegisterCaptcha();
+        return;
+      }
+      
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Inscription réussie ! Veuillez vous connecter.");
+          showLoginSection();
+        })
+        .catch((error) => {
+          alert("Erreur : " + error.message);
+        });
+    };
+    
+    // Fonction de connexion
+    window.loginUser = function() {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const captchaAnswer = parseInt(document.getElementById("login-captcha-answer").value);
+      
+      if(captchaAnswer !== captchaResultLogin) {
+        alert("Captcha incorrect. Veuillez réessayer.");
+        generateLoginCaptcha();
+        return;
+      }
+      
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Annonce sur le paiement mensuel
+          if(confirm("Attention : L’accès à Asa En Ligne nécessite un paiement mensuel de 1000 Ar. Appuyez sur OK pour continuer.")) {
+            const userCode = prompt("Veuillez entrer votre code d'activation :");
+            if(userCode === "0808") {
+              alert("Connexion réussie ! Redirection...");
+              window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app//"; // Remplacez par l'URL de redirection souhaitée
+            } else {
+              alert("Code incorrect. Veuillez contacter le service client pour obtenir le code d'activation.");
+            }
+          } else {
+            alert("Vous devez accepter ces conditions pour continuer.");
+          }
+        })
+        .catch((error) => {
+          alert("Erreur : " + error.message);
+        });
+    };
+    
+    // Fonction pour réinitialiser le mot de passe
+    window.resetPassword = function() {
+      const email = document.getElementById("login-email").value.trim();
+      if(!email) {
+        alert("Veuillez entrer votre adresse e-mail pour réinitialiser le mot de passe.");
+        return;
+      }
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          alert("Email de réinitialisation envoyé !");
+        })
+        .catch((error) => {
+          alert("Erreur : " + error.message);
+        });
+    };
+    
+    // Fonctions pour basculer entre les sections
+    window.showRegistrationSection = function() {
+      document.getElementById("registration-section").style.display = "block";
+      document.getElementById("login-section").style.display = "none";
+    };
+    
+    window.showLoginSection = function() {
+      document.getElementById("registration-section").style.display = "none";
+      document.getElementById("login-section").style.display = "block";
+    };
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    h2 { text-align: center; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #218838; }
+    .link { text-align: center; margin-top: 10px; }
+    a { color: #007bff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
-    <h2 style ="color : white ; background-color :blue ;border-radius :15px ;border :1px solid black ; text-align :center ;">BIENVENUE SUR LA PLATE-FORME ASA EN LIGNE MAD </h2>
-
-    <form id="formInscription">
-        <h3>Inscription</h3>
-        <input type="text" id="nom" placeholder="Nom" required>
-        <input type="email" id="email" placeholder="Email (@gmail.com)" required>
-        <input type="password" id="password" placeholder="Mot de passe" required>
-        <button type="button" onclick="inscrire()">S'inscrire</button>
-        <p class="switch" onclick="switchToLogin()">Déjà inscrit ? Se connecter</p>
+    <!-- Tidio Chat Script -->
+    <script src="//code.tidio.co/qohm2j6hy5em7agru8tgjkx0b52hw6wj.js" async></script>
+  <!-- Section Inscription -->
+  <div id="registration-section" class="container">
+    <h2>Inscription</h2>
+    <form onsubmit="event.preventDefault(); registerUser();">
+      <input type="text" id="full-name" placeholder="Nom complet" required>
+      <input type="email" id="email" placeholder="E-mail" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
+      <p id="register-captcha-challenge" style="font-weight: bold;"></p>
+      <input type="text" id="register-captcha-answer" placeholder="Réponse au captcha" required>
+      <button type="submit">S'inscrire</button>
     </form>
-
-    <form id="formConnexion" class="hidden">
-        <h3>Connexion</h3>
-        <input type="email" id="emailConnexion" placeholder="Email" required>
-        <input type="password" id="passwordConnexion" placeholder="Mot de passe" required>
-        <button type="button" onclick="connecter()">Se connecter</button>
-        <button type="button" onclick="motDePasseOublie()">Mot de passe oublié</button>
-    </form>
-
-    <button onclick="verifierCode()">Voir liste des utilisateurs</button>
-
-    <div id="listeUtilisateurs" class="hidden">
-        <h3>Liste des utilisateurs</h3>
-        <table id="tableauUtilisateurs">
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Action</th>
-            </tr>
-        </table>
+    <div class="link">
+      Déjà un compte ? <a href="#" onclick="showLoginSection()">Connectez-vous</a>
     </div>
-
-    <script src="script.js"></script>
+  </div>
+  
+  <!-- Section Connexion -->
+  <div id="login-section" class="container" style="display: none;">
+    <h2>Connexion</h2>
+    <form onsubmit="event.preventDefault(); loginUser();">
+      <input type="email" id="login-email" placeholder="E-mail" required>
+      <input type="password" id="login-password" placeholder="Mot de passe" required>
+      <p id="login-captcha-challenge" style="font-weight: bold;"></p>
+      <input type="text" id="login-captcha-answer" placeholder="Réponse au captcha" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <div class="link">
+      <a href="#" onclick="resetPassword()">Mot de passe oublié ?</a>
+    </div>
+    <div class="link">
+      Pas de compte ? <a href="#" onclick="showRegistrationSection()">S'inscrire</a>
+    </div>
+  </div>
 </body>
-<script >document.addEventListener("DOMContentLoaded", function() {
-    afficherUtilisateurs();
-});
-
-function inscrire() {
-    let nom = document.getElementById("nom").value.trim();
-    let email = document.getElementById("email").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-
-    if (nom === "" || email === "" || password === "") {
-        alert("Veuillez remplir tous les champs !");
-        return;
-    }
-
-    if (!email.endsWith("@gmail.com")) {
-        alert("Veuillez entrer une adresse email valide (@gmail.com) !");
-        return;
-    }
-
-    let existe = utilisateurs.find(user => user.email === email || user.nom === nom);
-    if (existe) {
-        alert("Cet email ou nom est déjà enregistré !");
-        return;
-    }
-
-    utilisateurs.push({ nom, email, password });
-    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
-
-    alert("Inscription réussie !");
-    document.getElementById("formInscription").classList.add("hidden");
-    document.getElementById("formConnexion").classList.remove("hidden");
-
-    afficherUtilisateurs();
-}
-
-function connecter() {
-    let email = document.getElementById("emailConnexion").value;
-    let password = document.getElementById("passwordConnexion").value;
-
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    let utilisateur = utilisateurs.find(user => user.email === email && user.password === password);
-
-    if (utilisateur) {
-        alert("Connexion réussie !");
-        window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
-    } else {
-        alert("Email ou mot de passe incorrect !");
-    }
-}
-
-function motDePasseOublie() {
-    let email = prompt("Entrez votre email :");
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    let utilisateur = utilisateurs.find(user => user.email === email);
-
-    if (utilisateur) {
-        alert("Votre mot de passe est : " + utilisateur.password);
-    } else {
-        alert("Email non trouvé !");
-    }
-}
-
-function verifierCode() {
-    let code = prompt("Entrez le code d'accès :");
-
-    if (code === "080600") {
-        document.getElementById("listeUtilisateurs").classList.remove("hidden");
-        afficherUtilisateurs();
-    } else {
-        alert("Code incorrect !");
-    }
-}
-
-function afficherUtilisateurs() {
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    let tableau = document.getElementById("tableauUtilisateurs");
-
-    tableau.innerHTML = `
-        <tr>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Action</th>
-        </tr>
-    `;
-
-    utilisateurs.forEach((user, index) => {
-        let row = tableau.insertRow();
-        row.insertCell(0).innerText = user.nom;
-        row.insertCell(1).innerText = user.email;
-
-        let btnDelete = document.createElement("button");
-        btnDelete.innerText = "Effacer";
-        btnDelete.onclick = function() {
-            supprimerUtilisateur(index);
-        };
-        row.insertCell(2).appendChild(btnDelete);
-    });
-}
-
-function supprimerUtilisateur(index) {
-    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    utilisateurs.splice(index, 1);
-    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
-    afficherUtilisateurs();
-}
-
-// Fonction de changement de formulaire
-function switchToLogin() {
-    document.getElementById("formInscription").classList.add("hidden");
-    document.getElementById("formConnexion").classList.remove("hidden");
-}
- </script>
 </html>
