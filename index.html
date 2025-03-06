@@ -15,7 +15,7 @@
       apiKey: "AIzaSyCK4HqGSjYRT2jFNhAvniSWIzhDvEb2qAQ",
       authDomain: "asa-en-ligne.firebaseapp.com",
       projectId: "asa-en-ligne",
-      storageBucket: "asa-en-ligne.firebasestorage.app",
+      storageBucket: "asa-en-ligne.appspot.com",
       messagingSenderId: "58359363245",
       appId: "1:58359363245:web:ca5969776ce9cd86aef824",
       measurementId: "G-MRVHVWPV71"
@@ -26,14 +26,14 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     
-    // Captcha ho an'ny inscription sy connexion
+    // Captcha pour l'inscription et la connexion
     let captchaResultRegister;
     function generateRegisterCaptcha() {
       const num1 = Math.floor(Math.random() * 10) + 1;
       const num2 = Math.floor(Math.random() * 10) + 1;
       captchaResultRegister = num1 + num2;
       const challengeElem = document.getElementById("register-captcha-challenge");
-      if(challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+      if (challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
     }
     let captchaResultLogin;
     function generateLoginCaptcha() {
@@ -41,7 +41,7 @@
       const num2 = Math.floor(Math.random() * 10) + 1;
       captchaResultLogin = num1 + num2;
       const challengeElem = document.getElementById("login-captcha-challenge");
-      if(challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+      if (challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
     }
     
     window.addEventListener("DOMContentLoaded", () => {
@@ -49,19 +49,19 @@
       generateLoginCaptcha();
     });
     
-    // Fonction d'inscription: Mamorona kaonty ary mitahiry ny angona fanampiny ao amin'ny Firestore
-    window.registerUser = function() {
+    // Fonction d'inscription
+    window.registerUser = function () {
       const fullName = document.getElementById("full-name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirm-password").value;
       const captchaAnswer = parseInt(document.getElementById("register-captcha-answer").value);
       
-      if(password !== confirmPassword) {
+      if (password !== confirmPassword) {
         alert("Les mots de passe ne correspondent pas.");
         return;
       }
-      if(captchaAnswer !== captchaResultRegister) {
+      if (captchaAnswer !== captchaResultRegister) {
         alert("Captcha incorrect. Veuillez réessayer.");
         generateRegisterCaptcha();
         return;
@@ -70,9 +70,7 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          // Mamorona code d'activation (ohatra 4-nomerika)
           const activationCode = String(Math.floor(1000 + Math.random() * 9000));
-          // Tehirizo ao amin'ny Firestore ao amin'ny collection "users" miaraka amin'ny document ID = user.uid
           setDoc(doc(db, "users", user.uid), {
             fullName: fullName,
             email: email,
@@ -93,13 +91,13 @@
         });
     };
     
-    // Fonction de connexion: Maka ny data fanampiny avy ao amin'ny Firestore
-    window.loginUser = function() {
+    // Fonction de connexion
+    window.loginUser = function () {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
       const captchaAnswer = parseInt(document.getElementById("login-captcha-answer").value);
       
-      if(captchaAnswer !== captchaResultLogin) {
+      if (captchaAnswer !== captchaResultLogin) {
         alert("Captcha incorrect. Veuillez réessayer.");
         generateLoginCaptcha();
         return;
@@ -110,11 +108,11 @@
           const user = userCredential.user;
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
-          if(docSnap.exists()) {
+          if (docSnap.exists()) {
             const userData = docSnap.data();
-            if(confirm("Attention : L’accès à Asa En Ligne nécessite un paiement mensuel de 1000 Ar. Appuyez sur OK pour continuer.")) {
+            if (confirm("Attention : L’accès à Asa En Ligne nécessite un paiement mensuel de 1000 Ar. Appuyez sur OK pour continuer.")) {
               const userCode = prompt("Veuillez entrer votre code d'activation :");
-              if(userData.activationCode === userCode) {
+              if (userData.activationCode === userCode) {
                 alert("Connexion réussie ! Redirection...");
                 window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
               } else {
@@ -133,9 +131,9 @@
     };
     
     // Fonction de réinitialisation du mot de passe
-    window.resetPassword = function() {
+    window.resetPassword = function () {
       const email = document.getElementById("login-email").value.trim();
-      if(!email) {
+      if (!email) {
         alert("Veuillez entrer votre adresse e-mail pour réinitialiser le mot de passe.");
         return;
       }
@@ -149,32 +147,31 @@
     };
     
     // Fonctions pour basculer entre les sections
-    window.showRegistrationSection = function() {
+    window.showRegistrationSection = function () {
       document.getElementById("registration-section").style.display = "block";
       document.getElementById("login-section").style.display = "none";
     };
-    window.showLoginSection = function() {
+    window.showLoginSection = function () {
       document.getElementById("registration-section").style.display = "none";
       document.getElementById("login-section").style.display = "block";
     };
 
-    // Fonction hanamarinana ny code d'accès ho an'ny tabilao
-    window.checkActivationAccessCode = function() {
+    // Fonction pour vérifier le code d'accès
+    window.checkActivationAccessCode = function () {
       const inputCode = document.getElementById("activation-access-code").value;
-      if(inputCode === "080600") {
+      if (inputCode === "080600") {
         document.getElementById("activation-table-container").style.display = "block";
         document.getElementById("activation-access-form").style.display = "none";
-        // Maka avy any Firestore ny angona rehetra ary manavao ny tabilao
         loadActivationCodesTable();
       } else {
         alert("Code d'accès incorrect!");
       }
     };
 
-    // Fonction haka ny angona avy any Firestore sy hanavaozana ny tabilao
+    // Fonction pour charger les codes d'activation depuis Firestore
     async function loadActivationCodesTable() {
       const tableBody = document.getElementById("activation-table-body");
-      tableBody.innerHTML = ""; // Diovy aloha ny votoaty
+      tableBody.innerHTML = ""; // Vider le tableau
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((docSnap) => {
@@ -192,6 +189,24 @@
         console.error("Erreur lors du chargement des codes d'activation: ", error);
       }
     }
+
+    // Fonction pour filtrer le tableau
+    function filterTable() {
+      const searchTerm = document.getElementById("search-bar").value.toLowerCase();
+      const rows = document.querySelectorAll("#activation-table-body tr");
+      rows.forEach(row => {
+        const email = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
+        const code = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        if (email.includes(searchTerm) || code.includes(searchTerm)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    // Écouteur d'événement pour la barre de recherche
+    document.getElementById("search-bar").addEventListener("input", filterTable);
   </script>
   <style>
     body {
@@ -206,7 +221,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
     h2 { text-align: center; }
     input[type="text"],
@@ -243,12 +258,16 @@
       padding: 8px;
       text-align: center;
     }
+    #search-bar {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
-  <!-- Tidio Chat Script (raha ilaina) -->
-  <script src="//code.tidio.co/qohm2j6hy5em7agru8tgjkx0b52hw6wj.js" async></script>
-  
   <!-- Section Inscription -->
   <div id="registration-section" class="container">
     <h2>Inscription</h2>
@@ -284,7 +303,7 @@
     </div>
   </div>
   
-  <!-- Formulaire fidirana amin'ny tabilao des Codes d'Activation -->
+  <!-- Formulaire d'accès au tableau des codes d'activation -->
   <div class="container" id="activation-access-form">
     <h2>Accès aux Codes d'Activation</h2>
     <form onsubmit="event.preventDefault(); checkActivationAccessCode();">
@@ -293,9 +312,10 @@
     </form>
   </div>
   
-  <!-- Tabilao Codes d'Activation (mise à jour avy any Firestore) -->
+  <!-- Tableau des codes d'activation -->
   <div class="container" id="activation-table-container" style="display: none;">
     <h2>Codes d'Activation</h2>
+    <input type="text" id="search-bar" placeholder="Rechercher par e-mail ou code d'activation...">
     <table>
       <thead>
         <tr>
@@ -304,12 +324,19 @@
         </tr>
       </thead>
       <tbody id="activation-table-body">
-        <!-- Ireo andalana dia ampiana avy any Firestore -->
+        <!-- Les données seront chargées dynamiquement -->
       </tbody>
     </table>
   </div>
 </body>
-</html>
+</html
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="mg">
 <head>
@@ -428,3 +455,4 @@
   </script>
 </body>
 </html>
+>
