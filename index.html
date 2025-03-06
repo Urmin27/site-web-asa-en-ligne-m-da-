@@ -310,3 +310,121 @@
   </div>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Annonce: Groupe de Discussion Asa En Ligne Mäda</title>
+  <style>
+    /* Fametrahana fototra */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+    /* Fonosana manarona ny pejy */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    /* Vatan'ny modal */
+    .modal-content {
+      position: relative;
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.5s ease;
+    }
+    /* Bokotra hanakatona */
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    /* Fizarana icône amin'ny endrika dessin animé */
+    .images-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    .images-container img {
+      width: 80px;
+      height: 80px;
+      margin: 0 5px;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    .modal-content p {
+      color: #555;
+      line-height: 1.6;
+    }
+    .join-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #28a745;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .join-btn:hover {
+      background-color: #218838;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Annonce modal manarona ny pejy -->
+  <div class="modal-overlay" id="announcement">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <!-- Icône amin'ny endrika dessin animé -->
+      <div class="images-container">
+        <img src="https://img.icons8.com/doodle/80/000000/user-male.png" alt="Icon 1">
+        <img src="https://img.icons8.com/doodle/80/000000/user-female.png" alt="Icon 2">
+        <img src="https://img.icons8.com/doodle/80/000000/user.png" alt="Icon 3">
+      </div>
+      <h2>Misokatra ny Groupe de Discussion Asa En Ligne Mäda!</h2>
+      <p>
+        Manasa anao hanatevin-daharana ny vondrona ho an'ny asa en ligne. Eto no ahafahanao 
+        mifampizara traikefa, mahazo torohevitra, ary manampy amin'ny fanombohana sy fandrosoana. 
+        Raiso an-tanana ny vintanao, ary miomàna hahita fahombiazana!
+      </p>
+      <a href="https://groupe-de-discussion-asa-en-ligne-m-da.vercel.app/" class="join-btn" target="_blank">
+        Midira Eto
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function closeModal() {
+      document.getElementById("announcement").style.display = "none";
+    }
+  </script>
+</body>
+</html>
