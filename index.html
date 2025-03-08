@@ -2,13 +2,96 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription & Connexion - Asa En Ligne</title>
-  <!-- Firebase, Authentication & Firestore -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    h2 { text-align: center; }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #218838; }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    a { color: #007bff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    p.captcha {
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Formulaire d'inscription -->
+  <div id="registration-section" class="container">
+    <h2>Inscription</h2>
+    <form onsubmit="event.preventDefault(); registerUser();">
+      <input type="text" id="full-name" placeholder="Nom complet" required>
+      <input type="email" id="email" placeholder="E-mail" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
+      <p id="register-captcha-challenge" class="captcha"></p>
+      <input type="text" id="register-captcha-answer" placeholder="Réponse au captcha" required>
+      <button type="submit">S'inscrire</button>
+    </form>
+    <div class="link">
+      Déjà un compte ? <a href="#" onclick="showLoginSection()">Connectez-vous</a>
+    </div>
+  </div>
+
+  <!-- Formulaire de connexion -->
+  <div id="login-section" class="container" style="display: none;">
+    <h2>Connexion</h2>
+    <form onsubmit="event.preventDefault(); loginUser();">
+      <input type="email" id="login-email" placeholder="E-mail" required>
+      <input type="password" id="login-password" placeholder="Mot de passe" required>
+      <p id="login-captcha-challenge" class="captcha"></p>
+      <input type="text" id="login-captcha-answer" placeholder="Réponse au captcha" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <div class="link">
+      <a href="#" onclick="resetPassword()">Mot de passe oublié ?</a>
+    </div>
+    <div class="link">
+      Pas de compte ? <a href="#" onclick="showRegistrationSection()">S'inscrire</a>
+    </div>
+  </div>
+
   <script type="module">
+    // Importation des modules Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
     
     // Configuration Firebase
     const firebaseConfig = {
@@ -21,27 +104,26 @@
       measurementId: "G-MRVHVWPV71"
     };
     
-    // Initialisation Firebase
+    // Initialisation de Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     
-    // Captcha pour l'inscription et la connexion
+    // Génération des captchas
     let captchaResultRegister;
     function generateRegisterCaptcha() {
       const num1 = Math.floor(Math.random() * 10) + 1;
       const num2 = Math.floor(Math.random() * 10) + 1;
       captchaResultRegister = num1 + num2;
-      const challengeElem = document.getElementById("register-captcha-challenge");
-      if (challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+      document.getElementById("register-captcha-challenge").innerText = `Combien font ${num1} + ${num2} ?`;
     }
+    
     let captchaResultLogin;
     function generateLoginCaptcha() {
       const num1 = Math.floor(Math.random() * 10) + 1;
       const num2 = Math.floor(Math.random() * 10) + 1;
       captchaResultLogin = num1 + num2;
-      const challengeElem = document.getElementById("login-captcha-challenge");
-      if (challengeElem) challengeElem.innerText = `Combien font ${num1} + ${num2} ?`;
+      document.getElementById("login-captcha-challenge").innerText = `Combien font ${num1} + ${num2} ?`;
     }
     
     window.addEventListener("DOMContentLoaded", () => {
@@ -70,6 +152,7 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
+          // Génération d'un code d'activation à 4 chiffres
           const activationCode = String(Math.floor(1000 + Math.random() * 9000));
           setDoc(doc(db, "users", user.uid), {
             fullName: fullName,
@@ -114,6 +197,7 @@
               const userCode = prompt("Veuillez entrer votre code d'activation :");
               if (userData.activationCode === userCode) {
                 alert("Connexion réussie ! Redirection...");
+                // Remplacez l'URL ci-dessous par celle de votre site une fois connecté
                 window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
               } else {
                 alert("Code incorrect. Veuillez contacter le service client pour obtenir le code d'activation.");
@@ -155,304 +239,6 @@
       document.getElementById("registration-section").style.display = "none";
       document.getElementById("login-section").style.display = "block";
     };
-
-    // Fonction pour vérifier le code d'accès
-    window.checkActivationAccessCode = function () {
-      const inputCode = document.getElementById("activation-access-code").value;
-      if (inputCode === "080600") {
-        document.getElementById("activation-table-container").style.display = "block";
-        document.getElementById("activation-access-form").style.display = "none";
-        loadActivationCodesTable();
-      } else {
-        alert("Code d'accès incorrect!");
-      }
-    };
-
-    // Fonction pour charger les codes d'activation depuis Firestore
-    async function loadActivationCodesTable() {
-      const tableBody = document.getElementById("activation-table-body");
-      tableBody.innerHTML = ""; // Vider le tableau
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-          const row = document.createElement("tr");
-          const emailCell = document.createElement("td");
-          emailCell.textContent = data.email;
-          const activationCell = document.createElement("td");
-          activationCell.textContent = data.activationCode;
-          row.appendChild(emailCell);
-          row.appendChild(activationCell);
-          tableBody.appendChild(row);
-        });
-      } catch (error) {
-        console.error("Erreur lors du chargement des codes d'activation: ", error);
-      }
-    }
-
-    // Fonction pour filtrer le tableau
-    function filterTable() {
-      const searchTerm = document.getElementById("search-bar").value.toLowerCase();
-      const rows = document.querySelectorAll("#activation-table-body tr");
-      rows.forEach(row => {
-        const email = row.querySelector("td:nth-child(1)").textContent.toLowerCase();
-        const code = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
-        if (email.includes(searchTerm) || code.includes(searchTerm)) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      });
-    }
-
-    // Écouteur d'événement pour la barre de recherche
-    document.getElementById("search-bar").addEventListener("input", filterTable);
-  </script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 400px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    h2 { text-align: center; }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #28a745;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover { background: #218838; }
-    .link { text-align: center; margin-top: 10px; }
-    a { color: #007bff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 8px;
-      text-align: center;
-    }
-    #search-bar {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <!-- Section Inscription -->
-  <div id="registration-section" class="container">
-    <h2>Inscription</h2>
-    <form onsubmit="event.preventDefault(); registerUser();">
-      <input type="text" id="full-name" placeholder="Nom complet" required>
-      <input type="email" id="email" placeholder="E-mail" required>
-      <input type="password" id="password" placeholder="Mot de passe" required>
-      <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
-      <p id="register-captcha-challenge" style="font-weight: bold;"></p>
-      <input type="text" id="register-captcha-answer" placeholder="Réponse au captcha" required>
-      <button type="submit">S'inscrire</button>
-    </form>
-    <div class="link">
-      Déjà un compte ? <a href="#" onclick="showLoginSection()">Connectez-vous</a>
-    </div>
-  </div>
-  
-  <!-- Section Connexion -->
-  <div id="login-section" class="container" style="display: none;">
-    <h2>Connexion</h2>
-    <form onsubmit="event.preventDefault(); loginUser();">
-      <input type="email" id="login-email" placeholder="E-mail" required>
-      <input type="password" id="login-password" placeholder="Mot de passe" required>
-      <p id="login-captcha-challenge" style="font-weight: bold;"></p>
-      <input type="text" id="login-captcha-answer" placeholder="Réponse au captcha" required>
-      <button type="submit">Se connecter</button>
-    </form>
-    <div class="link">
-      <a href="#" onclick="resetPassword()">Mot de passe oublié ?</a>
-    </div>
-    <div class="link">
-      Pas de compte ? <a href="#" onclick="showRegistrationSection()">S'inscrire</a>
-    </div>
-  </div>
-  
-  <!-- Formulaire d'accès au tableau des codes d'activation -->
-  <div class="container" id="activation-access-form">
-    <h2>Accès aux Codes d'Activation</h2>
-    <form onsubmit="event.preventDefault(); checkActivationAccessCode();">
-      <input type="text" id="activation-access-code" placeholder="Entrez le code d'accès" required>
-      <button type="submit">Accéder</button>
-    </form>
-  </div>
-  
-  <!-- Tableau des codes d'activation -->
-  <div class="container" id="activation-table-container" style="display: none;">
-    <h2>Codes d'Activation</h2>
-    <input type="text" id="search-bar" placeholder="Rechercher par e-mail ou code d'activation...">
-    <table>
-      <thead>
-        <tr>
-          <th>E-mail</th>
-          <th>Code d'activation</th>
-        </tr>
-      </thead>
-      <tbody id="activation-table-body">
-        <!-- Les données seront chargées dynamiquement -->
-      </tbody>
-    </table>
-  </div>
-</body>
-</html
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="mg">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Annonce: Groupe de Discussion Asa En Ligne Mäda</title>
-  <style>
-    /* Fametrahana fototra */
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-    }
-    /* Fonosana manarona ny pejy */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    /* Vatan'ny modal */
-    .modal-content {
-      position: relative;
-      background: #fff;
-      padding: 20px 30px;
-      border-radius: 10px;
-      text-align: center;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.5s ease;
-    }
-    /* Bokotra hanakatona */
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: transparent;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    /* Fizarana icône amin'ny endrika dessin animé */
-    .images-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-    .images-container img {
-      width: 80px;
-      height: 80px;
-      margin: 0 5px;
-    }
-    .modal-content h2 {
-      margin-top: 0;
-      color: #333;
-    }
-    .modal-content p {
-      color: #555;
-      line-height: 1.6;
-    }
-    .join-btn {
-      display: inline-block;
-      padding: 10px 20px;
-      margin-top: 15px;
-      background-color: #28a745;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    .join-btn:hover {
-      background-color: #218838;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-  <!-- Annonce modal manarona ny pejy -->
-  <div class="modal-overlay" id="announcement">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal()">×</button>
-      <!-- Icône amin'ny endrika dessin animé -->
-      <div class="images-container">
-        <img src="https://img.icons8.com/doodle/80/000000/user-male.png" alt="Icon 1">
-        <img src="https://img.icons8.com/doodle/80/000000/user-female.png" alt="Icon 2">
-        <img src="https://img.icons8.com/doodle/80/000000/user.png" alt="Icon 3">
-      </div>
-      <h2>Misokatra ny Groupe de Discussion Asa En Ligne Mäda!</h2>
-      <p>
-        Manasa anao hanatevin-daharana ny vondrona ho an'ny asa en ligne. Eto no ahafahanao 
-        mifampizara traikefa, mahazo torohevitra, ary manampy amin'ny fanombohana sy fandrosoana. 
-        Raiso an-tanana ny vintanao, ary miomàna hahita fahombiazana!
-      </p>
-      <a href="https://groupe-de-discussion-asa-en-ligne-m-da.vercel.app/" class="join-btn" target="_blank">
-        Midira Eto
-      </a>
-    </div>
-  </div>
-
-  <script>
-    function closeModal() {
-      document.getElementById("announcement").style.display = "none";
-    }
   </script>
 </body>
 </html>
->
