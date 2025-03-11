@@ -17,12 +17,13 @@
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     h2 { text-align: center; }
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="number"] {
       width: 100%;
       padding: 10px;
       margin: 5px 0 15px;
@@ -39,20 +40,15 @@
       cursor: pointer;
     }
     button:hover { background: #218838; }
-    .link {
-      text-align: center;
-      margin-top: 10px;
-    }
+    .link { text-align: center; margin-top: 10px; }
     a { color: #007bff; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    p.captcha {
-      font-weight: bold;
-      text-align: center;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <!-- Formulaire d'inscription -->
+
+  <!-- Section d'inscription -->
   <div id="registration-section" class="container">
     <h2>Inscription</h2>
     <form onsubmit="event.preventDefault(); registerUser();">
@@ -60,8 +56,7 @@
       <input type="email" id="email" placeholder="E-mail" required>
       <input type="password" id="password" placeholder="Mot de passe" required>
       <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
-      <p id="register-captcha-challenge" class="captcha"></p>
-      <input type="text" id="register-captcha-answer" placeholder="Réponse au captcha" required>
+      <!-- (Ajoutez captcha si désiré) -->
       <button type="submit">S'inscrire</button>
     </form>
     <div class="link">
@@ -69,14 +64,13 @@
     </div>
   </div>
 
-  <!-- Formulaire de connexion -->
-  <div id="login-section" class="container" style="display: none;">
+  <!-- Section de connexion initiale -->
+  <div id="login-section" class="container hidden">
     <h2>Connexion</h2>
     <form onsubmit="event.preventDefault(); loginUser();">
       <input type="email" id="login-email" placeholder="E-mail" required>
       <input type="password" id="login-password" placeholder="Mot de passe" required>
-      <p id="login-captcha-challenge" class="captcha"></p>
-      <input type="text" id="login-captcha-answer" placeholder="Réponse au captcha" required>
+      <!-- (Ajoutez captcha si désiré) -->
       <button type="submit">Se connecter</button>
     </form>
     <div class="link">
@@ -87,12 +81,98 @@
     </div>
   </div>
 
+  <!-- Section d'annonce de paiement -->
+  <div id="payment-instructions" class="container hidden">
+    <h2>Annonce de Paiement</h2>
+    <p>Mila mandoa 1000 Ar isambolana ianao vao hahazo code d'activation.</p>
+    <button onclick="proceedToPayment()">D'accord</button>
+  </div>
+
+  <!-- Section mise en avant des numéros de paiement -->
+  <div id="payment-numbers" class="container hidden">
+    <h2>Envoyer votre paiement</h2>
+    <p>Mandefasa vola amin'ireto laharana ireto :</p>
+    <ul>
+      <li>0323911654 [RAVELOMANANTSOA Urmin]</li>
+      <li>0384557584 [BEFOTSY Ranjity]</li>
+      <li>0333635111 [RANAIVOSON Angelo]</li>
+    </ul>
+    <button onclick="showPaymentProofForm()">J'ai payé</button>
+  </div>
+
+  <!-- Formulaire de preuve de paiement -->
+  <div id="payment-proof" class="container hidden">
+    <h2>Preuve de Paiement</h2>
+    <input type="text" id="proof-fullname" placeholder="Nom complet" required>
+    <input type="text" id="proof-phone" placeholder="NUMERO de téléphone utilisé" required>
+    <input type="number" id="proof-amount" placeholder="Montant à payer" required>
+    <button onclick="submitPaymentProof()">Envoyer</button>
+  </div>
+
+  <!-- Notification "En attente de vérification" -->
+  <div id="pending-verification" class="container hidden">
+    <h2>En attente de vérification</h2>
+    <p>Votre demande de paiement est en attente de vérification par l'administration.</p>
+    <p id="timeout-message" class="hidden">
+      24h dépassé. Veuillez appeler ou envoyer un message à :<br>
+      0323911654, 0333635111, 0384557584
+    </p>
+  </div>
+
+  <!-- Notification après confirmation par admin -->
+  <div id="activation-notification" class="container hidden">
+    <h2>Paiement confirmé</h2>
+    <p>Votre paiement a été vérifié. Voici votre code d'activation : <span id="user-activation-code"></span></p>
+    <button onclick="showActivatedLogin()">Connectez-vous maintenant</button>
+  </div>
+
+  <!-- Formulaire de connexion avec activation -->
+  <div id="activated-login-section" class="container hidden">
+    <h2>Connexion (Activation requise)</h2>
+    <form onsubmit="event.preventDefault(); activatedLoginUser();">
+      <input type="email" id="activated-login-email" placeholder="E-mail" required>
+      <input type="password" id="activated-login-password" placeholder="Mot de passe" required>
+      <input type="text" id="activated-login-code" placeholder="Code d'activation" required>
+      <button type="submit">Se connecter</button>
+    </form>
+  </div>
+
+  <!-- Interface Admin -->
+  <div id="admin-section" class="container hidden">
+    <h2>Interface Admin - Demandes de Paiement</h2>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Nom Utilisateur</th>
+          <th>Numéro de téléphone</th>
+          <th>Montant</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="admin-table-body"></tbody>
+    </table>
+  </div>
+
   <script type="module">
-    // Importation des modules Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
-    
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      addDoc,
+      collection,
+      updateDoc,
+      deleteDoc,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+
     // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCK4HqGSjYRT2jFNhAvniSWIzhDvEb2qAQ",
@@ -103,61 +183,29 @@
       appId: "1:58359363245:web:ca5969776ce9cd86aef824",
       measurementId: "G-MRVHVWPV71"
     };
-    
-    // Initialisation de Firebase
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    
-    // Génération des captchas
-    let captchaResultRegister;
-    function generateRegisterCaptcha() {
-      const num1 = Math.floor(Math.random() * 10) + 1;
-      const num2 = Math.floor(Math.random() * 10) + 1;
-      captchaResultRegister = num1 + num2;
-      document.getElementById("register-captcha-challenge").innerText = `Combien font ${num1} + ${num2} ?`;
-    }
-    
-    let captchaResultLogin;
-    function generateLoginCaptcha() {
-      const num1 = Math.floor(Math.random() * 10) + 1;
-      const num2 = Math.floor(Math.random() * 10) + 1;
-      captchaResultLogin = num1 + num2;
-      document.getElementById("login-captcha-challenge").innerText = `Combien font ${num1} + ${num2} ?`;
-    }
-    
-    window.addEventListener("DOMContentLoaded", () => {
-      generateRegisterCaptcha();
-      generateLoginCaptcha();
-    });
-    
-    // Fonction d'inscription
-    window.registerUser = function () {
+
+    // Inscription : enregistre l'utilisateur sans code d'activation
+    window.registerUser = function() {
       const fullName = document.getElementById("full-name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirm-password").value;
-      const captchaAnswer = parseInt(document.getElementById("register-captcha-answer").value);
-      
-      if (password !== confirmPassword) {
+      // (Ajouter vérification captcha si nécessaire)
+      if(password !== confirmPassword) {
         alert("Les mots de passe ne correspondent pas.");
         return;
       }
-      if (captchaAnswer !== captchaResultRegister) {
-        alert("Captcha incorrect. Veuillez réessayer.");
-        generateRegisterCaptcha();
-        return;
-      }
-      
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          // Génération d'un code d'activation à 4 chiffres
-          const activationCode = String(Math.floor(1000 + Math.random() * 9000));
           setDoc(doc(db, "users", user.uid), {
             fullName: fullName,
             email: email,
-            activationCode: activationCode,
+            paymentStatus: "not_paid",
             createdAt: new Date()
           })
           .then(() => {
@@ -165,59 +213,63 @@
             showLoginSection();
           })
           .catch((error) => {
-            console.error("Erreur lors de l'écriture du document : ", error);
-            alert("Erreur lors de l'enregistrement des données supplémentaires.");
+            alert("Erreur lors de l'enregistrement des données supplémentaires : " + error.message);
           });
         })
         .catch((error) => {
           alert("Erreur : " + error.message);
         });
     };
-    
-    // Fonction de connexion
-    window.loginUser = function () {
+
+    // Connexion initiale
+    window.loginUser = function() {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
-      const captchaAnswer = parseInt(document.getElementById("login-captcha-answer").value);
-      
-      if (captchaAnswer !== captchaResultLogin) {
-        alert("Captcha incorrect. Veuillez réessayer.");
-        generateLoginCaptcha();
-        return;
-      }
-      
       signInWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const user = userCredential.user;
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            if (confirm("Attention : L’accès à Asa En Ligne nécessite un paiement mensuel de 1000 Ar. Appuyez sur OK pour continuer.")) {
-              const userCode = prompt("Veuillez entrer votre code d'activation :");
-              if (userData.activationCode === userCode) {
-                alert("Connexion réussie ! Redirection...");
-                // Remplacez l'URL ci-dessous par celle de votre site une fois connecté
-                window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
-              } else {
-                alert("Code incorrect. Veuillez contacter le service client pour obtenir le code d'activation.");
-              }
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if(userDoc.exists()){
+            const userData = userDoc.data();
+            if(userData.activationCode) {
+              // Paiement déjà validé → afficher notification avec code d'activation
+              document.getElementById("activation-notification").classList.remove("hidden");
+              document.getElementById("user-activation-code").innerText = userData.activationCode;
+            } else if(userData.paymentStatus === "pending") {
+              // Paiement en attente de vérification → afficher notification
+              document.getElementById("pending-verification").classList.remove("hidden");
+              checkTimeout(userData);
             } else {
-              alert("Vous devez accepter ces conditions pour continuer.");
+              // Aucune demande de paiement encore → afficher annonce de paiement
+              document.getElementById("payment-instructions").classList.remove("hidden");
             }
           } else {
             alert("Aucune donnée utilisateur trouvée.");
           }
         })
-        .catch((error) => {
-          alert("Erreur : " + error.message);
-        });
+        .catch(error => alert("Erreur : " + error.message));
     };
-    
-    // Fonction de réinitialisation du mot de passe
-    window.resetPassword = function () {
+
+    // Vérification du délai de 24h
+    async function checkTimeout(userData) {
+      const paymentsSnapshot = await getDocs(collection(db, "paymentRequests"));
+      paymentsSnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        if(data.userId === auth.currentUser.uid && data.status === "pending") {
+          const requestTime = new Date(data.timestamp);
+          const now = new Date();
+          const diffHours = (now - requestTime) / (1000 * 60 * 60);
+          if(diffHours >= 24) {
+            document.getElementById("timeout-message").classList.remove("hidden");
+          }
+        }
+      });
+    }
+
+    // Réinitialisation de mot de passe
+    window.resetPassword = function() {
       const email = document.getElementById("login-email").value.trim();
-      if (!email) {
+      if(!email) {
         alert("Veuillez entrer votre adresse e-mail pour réinitialiser le mot de passe.");
         return;
       }
@@ -229,16 +281,147 @@
           alert("Erreur : " + error.message);
         });
     };
-    
-    // Fonctions pour basculer entre les sections
-    window.showRegistrationSection = function () {
+
+    // Navigation entre sections
+    window.showRegistrationSection = function() {
       document.getElementById("registration-section").style.display = "block";
-      document.getElementById("login-section").style.display = "none";
+      document.getElementById("login-section").classList.add("hidden");
     };
-    window.showLoginSection = function () {
+
+    window.showLoginSection = function() {
       document.getElementById("registration-section").style.display = "none";
-      document.getElementById("login-section").style.display = "block";
+      document.getElementById("login-section").classList.remove("hidden");
+      // Masquer les autres sections
+      document.getElementById("payment-instructions").classList.add("hidden");
+      document.getElementById("payment-numbers").classList.add("hidden");
+      document.getElementById("payment-proof").classList.add("hidden");
+      document.getElementById("pending-verification").classList.add("hidden");
+      document.getElementById("activation-notification").classList.add("hidden");
+      document.getElementById("activated-login-section").classList.add("hidden");
     };
+
+    // Passage de l'annonce de paiement aux numéros de paiement
+    window.proceedToPayment = function() {
+      document.getElementById("payment-instructions").classList.add("hidden");
+      document.getElementById("payment-numbers").classList.remove("hidden");
+    };
+
+    // Affichage du formulaire de preuve de paiement
+    window.showPaymentProofForm = function() {
+      document.getElementById("payment-numbers").classList.add("hidden");
+      document.getElementById("payment-proof").classList.remove("hidden");
+    };
+
+    // Soumission de la preuve de paiement
+    window.submitPaymentProof = async function() {
+      const proofFullName = document.getElementById("proof-fullname").value.trim();
+      const proofPhone = document.getElementById("proof-phone").value.trim();
+      const proofAmount = document.getElementById("proof-amount").value.trim();
+      if(!proofFullName || !proofPhone || !proofAmount) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+      const paymentData = {
+        userId: auth.currentUser.uid,
+        fullName: proofFullName,
+        phone: proofPhone,
+        amount: proofAmount,
+        timestamp: new Date().toISOString(),
+        status: "pending"
+      };
+      await addDoc(collection(db, "paymentRequests"), paymentData)
+        .then(async () => {
+          // Mise à jour de l'état de paiement de l'utilisateur
+          const userRef = doc(db, "users", auth.currentUser.uid);
+          await updateDoc(userRef, { paymentStatus: "pending" });
+          alert("Votre demande de paiement a été envoyée. En attente de vérification.");
+          document.getElementById("payment-proof").classList.add("hidden");
+          document.getElementById("pending-verification").classList.remove("hidden");
+        })
+        .catch((error) => {
+          alert("Erreur lors de l'envoi de la preuve : " + error.message);
+        });
+    };
+
+    // Affichage du formulaire de connexion avec activation (après confirmation)
+    window.showActivatedLogin = function() {
+      document.getElementById("activation-notification").classList.add("hidden");
+      document.getElementById("activated-login-section").classList.remove("hidden");
+    };
+
+    // Connexion avec vérification du code d'activation
+    window.activatedLoginUser = async function() {
+      const email = document.getElementById("activated-login-email").value.trim();
+      const password = document.getElementById("activated-login-password").value;
+      const activationCode = document.getElementById("activated-login-code").value.trim();
+      signInWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+          const user = userCredential.user;
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if(userDoc.exists()){
+            const userData = userDoc.data();
+            if(userData.activationCode === activationCode) {
+              alert("Connexion réussie ! Redirection...");
+              window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
+            } else {
+              alert("Code d'activation incorrect.");
+            }
+          }
+        })
+        .catch(error => alert("Erreur : " + error.message));
+    };
+
+    // Interface Admin : chargement des demandes de paiement
+    async function loadAdminRequests() {
+      const querySnapshot = await getDocs(collection(db, "paymentRequests"));
+      const tableBody = document.getElementById("admin-table-body");
+      tableBody.innerHTML = "";
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if(data.status === "pending") {
+          tableBody.innerHTML += `
+            <tr>
+              <td>${data.fullName}</td>
+              <td>${data.phone}</td>
+              <td>${data.amount}</td>
+              <td>
+                <button onclick="confirmPayment('${docSnap.id}', '${data.userId}')">Confirmer</button>
+                <button onclick="cancelPayment('${docSnap.id}', '${data.userId}')">Annuler</button>
+              </td>
+            </tr>
+          `;
+        }
+      });
+    }
+
+    // Confirmation de paiement par l'admin
+    window.confirmPayment = async function(requestId, userId) {
+      const requestRef = doc(db, "paymentRequests", requestId);
+      await updateDoc(requestRef, { status: "confirmed" });
+      const activationCode = String(Math.floor(1000 + Math.random() * 9000));
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, { activationCode: activationCode, paymentStatus: "confirmed" });
+      alert("Paiement confirmé et code d'activation envoyé.");
+      loadAdminRequests();
+    };
+
+    // Annulation de la demande de paiement par l'admin
+    window.cancelPayment = async function(requestId, userId) {
+      const requestRef = doc(db, "paymentRequests", requestId);
+      await deleteDoc(requestRef);
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, { paymentStatus: "not_paid" });
+      alert("Demande annulée.");
+      loadAdminRequests();
+    };
+
+    // Affichage de l'interface admin (à sécuriser dans un environnement réel)
+    window.showAdminInterface = function() {
+      document.getElementById("admin-section").classList.remove("hidden");
+      loadAdminRequests();
+    };
+
   </script>
+
 </body>
 </html>
