@@ -47,7 +47,6 @@
   </style>
 </head>
 <body>
-
   <!-- Section d'inscription -->
   <div id="registration-section" class="container">
     <h2>Inscription</h2>
@@ -56,7 +55,6 @@
       <input type="email" id="email" placeholder="E-mail" required>
       <input type="password" id="password" placeholder="Mot de passe" required>
       <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
-      <!-- (Ajoutez captcha si désiré) -->
       <button type="submit">S'inscrire</button>
     </form>
     <div class="link">
@@ -64,13 +62,12 @@
     </div>
   </div>
 
-  <!-- Section de connexion initiale -->
+  <!-- Section de connexion -->
   <div id="login-section" class="container hidden">
     <h2>Connexion</h2>
     <form onsubmit="event.preventDefault(); loginUser();">
       <input type="email" id="login-email" placeholder="E-mail" required>
       <input type="password" id="login-password" placeholder="Mot de passe" required>
-      <!-- (Ajoutez captcha si désiré) -->
       <button type="submit">Se connecter</button>
     </form>
     <div class="link">
@@ -88,7 +85,7 @@
     <button onclick="proceedToPayment()">D'accord</button>
   </div>
 
-  <!-- Section mise en avant des numéros de paiement -->
+  <!-- Section misy laharana handefasana vola -->
   <div id="payment-numbers" class="container hidden">
     <h2>Envoyer votre paiement</h2>
     <p>Mandefasa vola amin'ireto laharana ireto :</p>
@@ -114,15 +111,16 @@
     <h2>En attente de vérification</h2>
     <p>Votre demande de paiement est en attente de vérification par l'administration.</p>
     <p id="timeout-message" class="hidden">
-      24h dépassé. Veuillez appeler ou envoyer un message à :<br>
-      0323911654, 0333635111, 0384557584
+      24h dépassé. Veuillez appeler ou envoyer un message à : 0323911654, 0333635111, 0384557584.
     </p>
   </div>
 
   <!-- Notification après confirmation par admin -->
   <div id="activation-notification" class="container hidden">
     <h2>Paiement confirmé</h2>
-    <p>Votre paiement a été vérifié. Voici votre code d'activation : <span id="user-activation-code"></span></p>
+    <p>Votre paiement a été vérifié.<br>
+       Voici votre nouveau code d'activation : <span id="user-activation-code"></span>
+    </p>
     <button onclick="showActivatedLogin()">Connectez-vous maintenant</button>
   </div>
 
@@ -137,43 +135,11 @@
     </form>
   </div>
 
-  <!-- Interface Admin -->
-  <div id="admin-section" class="container hidden">
-    <h2>Interface Admin - Demandes de Paiement</h2>
-    <table border="1" width="100%">
-      <thead>
-        <tr>
-          <th>Nom Utilisateur</th>
-          <th>Numéro de téléphone</th>
-          <th>Montant</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="admin-table-body"></tbody>
-    </table>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      addDoc,
-      collection,
-      updateDoc,
-      deleteDoc,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 
-    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCK4HqGSjYRT2jFNhAvniSWIzhDvEb2qAQ",
       authDomain: "asa-en-ligne.firebaseapp.com",
@@ -188,13 +154,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Inscription : enregistre l'utilisateur sans code d'activation
+    // Inscription : Tsy mamorona code d'activation aloha, fa manoratra fotsiny ny mombamomba miaraka amin'ny "paymentStatus" "not_paid".
     window.registerUser = function() {
       const fullName = document.getElementById("full-name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirm-password").value;
-      // (Ajouter vérification captcha si nécessaire)
       if(password !== confirmPassword) {
         alert("Les mots de passe ne correspondent pas.");
         return;
@@ -213,7 +178,7 @@
             showLoginSection();
           })
           .catch((error) => {
-            alert("Erreur lors de l'enregistrement des données supplémentaires : " + error.message);
+            alert("Erreur lors de l'enregistrement : " + error.message);
           });
         })
         .catch((error) => {
@@ -221,7 +186,7 @@
         });
     };
 
-    // Connexion initiale
+    // Connexion : Si le compte n'est pas payé, ne montre pas l'ancien code d'activation
     window.loginUser = function() {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
@@ -231,16 +196,14 @@
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if(userDoc.exists()){
             const userData = userDoc.data();
-            if(userData.activationCode) {
-              // Paiement déjà validé → afficher notification avec code d'activation
+            if(userData.paymentStatus === "confirmed"){
+              // Si paiement confirmé, afficher le nouveau code d'activation généré par admin
               document.getElementById("activation-notification").classList.remove("hidden");
               document.getElementById("user-activation-code").innerText = userData.activationCode;
-            } else if(userData.paymentStatus === "pending") {
-              // Paiement en attente de vérification → afficher notification
+            } else if(userData.paymentStatus === "pending"){
               document.getElementById("pending-verification").classList.remove("hidden");
-              checkTimeout(userData);
             } else {
-              // Aucune demande de paiement encore → afficher annonce de paiement
+              // Si non payé, afficher l'annonce de paiement
               document.getElementById("payment-instructions").classList.remove("hidden");
             }
           } else {
@@ -250,39 +213,17 @@
         .catch(error => alert("Erreur : " + error.message));
     };
 
-    // Vérification du délai de 24h
-    async function checkTimeout(userData) {
-      const paymentsSnapshot = await getDocs(collection(db, "paymentRequests"));
-      paymentsSnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        if(data.userId === auth.currentUser.uid && data.status === "pending") {
-          const requestTime = new Date(data.timestamp);
-          const now = new Date();
-          const diffHours = (now - requestTime) / (1000 * 60 * 60);
-          if(diffHours >= 24) {
-            document.getElementById("timeout-message").classList.remove("hidden");
-          }
-        }
-      });
-    }
-
-    // Réinitialisation de mot de passe
     window.resetPassword = function() {
       const email = document.getElementById("login-email").value.trim();
       if(!email) {
-        alert("Veuillez entrer votre adresse e-mail pour réinitialiser le mot de passe.");
+        alert("Veuillez entrer votre adresse e-mail.");
         return;
       }
       sendPasswordResetEmail(auth, email)
-        .then(() => {
-          alert("Email de réinitialisation envoyé !");
-        })
-        .catch((error) => {
-          alert("Erreur : " + error.message);
-        });
+        .then(() => alert("Email de réinitialisation envoyé !"))
+        .catch((error) => alert("Erreur : " + error.message));
     };
 
-    // Navigation entre sections
     window.showRegistrationSection = function() {
       document.getElementById("registration-section").style.display = "block";
       document.getElementById("login-section").classList.add("hidden");
@@ -300,19 +241,17 @@
       document.getElementById("activated-login-section").classList.add("hidden");
     };
 
-    // Passage de l'annonce de paiement aux numéros de paiement
     window.proceedToPayment = function() {
       document.getElementById("payment-instructions").classList.add("hidden");
       document.getElementById("payment-numbers").classList.remove("hidden");
     };
 
-    // Affichage du formulaire de preuve de paiement
     window.showPaymentProofForm = function() {
       document.getElementById("payment-numbers").classList.add("hidden");
       document.getElementById("payment-proof").classList.remove("hidden");
     };
 
-    // Soumission de la preuve de paiement
+    // Lorsqu'un utilisateur envoie la preuve de paiement, sa demande est ajoutée et son état passe à "pending"
     window.submitPaymentProof = async function() {
       const proofFullName = document.getElementById("proof-fullname").value.trim();
       const proofPhone = document.getElementById("proof-phone").value.trim();
@@ -331,26 +270,21 @@
       };
       await addDoc(collection(db, "paymentRequests"), paymentData)
         .then(async () => {
-          // Mise à jour de l'état de paiement de l'utilisateur
           const userRef = doc(db, "users", auth.currentUser.uid);
           await updateDoc(userRef, { paymentStatus: "pending" });
-          alert("Votre demande de paiement a été envoyée. En attente de vérification.");
+          alert("Votre demande a été envoyée. En attente de vérification.");
           document.getElementById("payment-proof").classList.add("hidden");
           document.getElementById("pending-verification").classList.remove("hidden");
         })
-        .catch((error) => {
-          alert("Erreur lors de l'envoi de la preuve : " + error.message);
-        });
+        .catch((error) => alert("Erreur lors de l'envoi : " + error.message));
     };
 
-    // Affichage du formulaire de connexion avec activation (après confirmation)
     window.showActivatedLogin = function() {
       document.getElementById("activation-notification").classList.add("hidden");
       document.getElementById("activated-login-section").classList.remove("hidden");
     };
 
-    // Connexion avec vérification du code d'activation
-    window.activatedLoginUser = async function() {
+    window.activatedLoginUser = function() {
       const email = document.getElementById("activated-login-email").value.trim();
       const password = document.getElementById("activated-login-password").value;
       const activationCode = document.getElementById("activated-login-code").value.trim();
@@ -370,58 +304,6 @@
         })
         .catch(error => alert("Erreur : " + error.message));
     };
-
-    // Interface Admin : chargement des demandes de paiement
-    async function loadAdminRequests() {
-      const querySnapshot = await getDocs(collection(db, "paymentRequests"));
-      const tableBody = document.getElementById("admin-table-body");
-      tableBody.innerHTML = "";
-      querySnapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        if(data.status === "pending") {
-          tableBody.innerHTML += `
-            <tr>
-              <td>${data.fullName}</td>
-              <td>${data.phone}</td>
-              <td>${data.amount}</td>
-              <td>
-                <button onclick="confirmPayment('${docSnap.id}', '${data.userId}')">Confirmer</button>
-                <button onclick="cancelPayment('${docSnap.id}', '${data.userId}')">Annuler</button>
-              </td>
-            </tr>
-          `;
-        }
-      });
-    }
-
-    // Confirmation de paiement par l'admin
-    window.confirmPayment = async function(requestId, userId) {
-      const requestRef = doc(db, "paymentRequests", requestId);
-      await updateDoc(requestRef, { status: "confirmed" });
-      const activationCode = String(Math.floor(1000 + Math.random() * 9000));
-      const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { activationCode: activationCode, paymentStatus: "confirmed" });
-      alert("Paiement confirmé et code d'activation envoyé.");
-      loadAdminRequests();
-    };
-
-    // Annulation de la demande de paiement par l'admin
-    window.cancelPayment = async function(requestId, userId) {
-      const requestRef = doc(db, "paymentRequests", requestId);
-      await deleteDoc(requestRef);
-      const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { paymentStatus: "not_paid" });
-      alert("Demande annulée.");
-      loadAdminRequests();
-    };
-
-    // Affichage de l'interface admin (à sécuriser dans un environnement réel)
-    window.showAdminInterface = function() {
-      document.getElementById("admin-section").classList.remove("hidden");
-      loadAdminRequests();
-    };
-
   </script>
-
 </body>
 </html>
