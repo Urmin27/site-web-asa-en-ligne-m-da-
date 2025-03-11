@@ -5,6 +5,7 @@
   <title>Inscription & Connexion - Asa En Ligne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* Style ankapobeny */
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
@@ -38,12 +39,35 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 5px;
     }
     button:hover { background: #218838; }
-    .link { text-align: center; margin-top: 10px; }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+    }
     a { color: #007bff; text-decoration: none; }
     a:hover { text-decoration: underline; }
     .hidden { display: none; }
+    
+    /* Style ny notification admin (ampiasaina rehefa voamarina) */
+    #admin-notification {
+      background: #fffae6;
+      border: 1px solid #ffcc00;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    #admin-notification p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    #admin-notification button {
+      width: auto;
+      padding: 5px 10px;
+      font-size: 13px;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -52,9 +76,9 @@
     <h2>Inscription</h2>
     <form onsubmit="event.preventDefault(); registerUser();">
       <input type="text" id="full-name" placeholder="Nom complet" required>
-      <input type="email" id="email" placeholder="E-mail" required>
-      <input type="password" id="password" placeholder="Mot de passe" required>
-      <input type="password" id="confirm-password" placeholder="Confirmer mot de passe" required>
+      <input type="email" id="reg-email" placeholder="E-mail" required>
+      <input type="password" id="reg-password" placeholder="Mot de passe" required>
+      <input type="password" id="reg-confirm-password" placeholder="Confirmer mot de passe" required>
       <button type="submit">S'inscrire</button>
     </form>
     <div class="link">
@@ -62,7 +86,7 @@
     </div>
   </div>
 
-  <!-- Section de connexion -->
+  <!-- Section de connexion initiale (Email & Mot de passe) -->
   <div id="login-section" class="container hidden">
     <h2>Connexion</h2>
     <form onsubmit="event.preventDefault(); loginUser();">
@@ -78,17 +102,10 @@
     </div>
   </div>
 
-  <!-- Section d'annonce de paiement -->
+  <!-- Section fampahafantarana fandoavana (ho an'ny tsy nandoa) -->
   <div id="payment-instructions" class="container hidden">
-    <h2>Annonce de Paiement</h2>
-    <p>Mila mandoa 1000 Ar isambolana ianao vao hahazo code d'activation.</p>
-    <button onclick="proceedToPayment()">D'accord</button>
-  </div>
-
-  <!-- Section misy laharana handefasana vola -->
-  <div id="payment-numbers" class="container hidden">
-    <h2>Envoyer votre paiement</h2>
-    <p>Mandefasa vola amin'ireto laharana ireto :</p>
+    <h2>Effectuez votre paiement</h2>
+    <p>Pour recevoir votre code d'activation, veuillez envoyer <strong>1000 Ar</strong> isambolana amin'ireo laharana manaraka:</p>
     <ul>
       <li>0323911654 [RAVELOMANANTSOA Urmin]</li>
       <li>0384557584 [BEFOTSY Ranjity]</li>
@@ -99,47 +116,63 @@
 
   <!-- Formulaire de preuve de paiement -->
   <div id="payment-proof" class="container hidden">
-    <h2>Preuve de Paiement</h2>
+    <h2>Preuve de paiement</h2>
     <input type="text" id="proof-fullname" placeholder="Nom complet" required>
-    <input type="text" id="proof-phone" placeholder="NUMERO de téléphone utilisé" required>
+    <input type="text" id="proof-phone" placeholder="Numéro de téléphone utilisé" required>
     <input type="number" id="proof-amount" placeholder="Montant à payer" required>
     <button onclick="submitPaymentProof()">Envoyer</button>
   </div>
 
-  <!-- Notification "En attente de vérification" -->
+  <!-- Notification de paiement en attente -->
   <div id="pending-verification" class="container hidden">
     <h2>En attente de vérification</h2>
     <p>Votre demande de paiement est en attente de vérification par l'administration.</p>
-    <p id="timeout-message" class="hidden">
-      24h dépassé. Veuillez appeler ou envoyer un message à : 0323911654, 0333635111, 0384557584.
-    </p>
   </div>
 
-  <!-- Notification après confirmation par admin -->
+  <!-- Notification d'activation (mise ho azy rehefa voamarina) -->
   <div id="activation-notification" class="container hidden">
     <h2>Paiement confirmé</h2>
-    <p>Votre paiement a été vérifié.<br>
-       Voici votre nouveau code d'activation : <span id="user-activation-code"></span>
-    </p>
-    <button onclick="showActivatedLogin()">Connectez-vous maintenant</button>
+    <!-- Notification admin (filazana fotsiny, tsy aseho ny votoatiny raha tsy tsindriana) -->
+    <div id="admin-notification" class="hidden">
+      <p id="admin-notification-text">Vous avez un message de l'admin.</p>
+      <button onclick="viewAdminMessage()">Voir</button>
+      <button onclick="dismissAdminMessage()">Fermer</button>
+    </div>
+    <!-- Note : Tsy aseho ny code d'activation raha tsy efa voamarina -->
+    <p id="activation-code-container">Voici votre nouveau code d'activation : <strong id="user-activation-code"></strong></p>
+    <button onclick="showFinalActivationForm()">Connectez-vous</button>
   </div>
 
-  <!-- Formulaire de connexion avec activation -->
-  <div id="activated-login-section" class="container hidden">
-    <h2>Connexion (Activation requise)</h2>
-    <form onsubmit="event.preventDefault(); activatedLoginUser();">
-      <input type="email" id="activated-login-email" placeholder="E-mail" required>
-      <input type="password" id="activated-login-password" placeholder="Mot de passe" required>
-      <input type="text" id="activated-login-code" placeholder="Code d'activation" required>
-      <button type="submit">Se connecter</button>
+  <!-- Formulaire final d'activation (fidirana tena) -->
+  <div id="final-activation-form" class="container hidden">
+    <h2>Connexion - Activation</h2>
+    <form onsubmit="event.preventDefault(); finalLogin();">
+      <input type="email" id="final-email" placeholder="E-mail" required>
+      <input type="password" id="final-password" placeholder="Mot de passe" required>
+      <input type="text" id="final-activation-code" placeholder="Code d'activation" required>
+      <button type="submit">Entrer</button>
     </form>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc,
+      addDoc,
+      collection
+    } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 
+    // Configuration Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCK4HqGSjYRT2jFNhAvniSWIzhDvEb2qAQ",
       authDomain: "asa-en-ligne.firebaseapp.com",
@@ -154,12 +187,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Inscription : Tsy mamorona code d'activation aloha, fa manoratra fotsiny ny mombamomba miaraka amin'ny "paymentStatus" "not_paid".
+    // Global variable hanovozana ny hafatra admin
+    let storedAdminMessage = "";
+
+    // ----- Inscription -----
     window.registerUser = function() {
       const fullName = document.getElementById("full-name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirm-password").value;
+      const email = document.getElementById("reg-email").value.trim();
+      const password = document.getElementById("reg-password").value;
+      const confirmPassword = document.getElementById("reg-confirm-password").value;
       if(password !== confirmPassword) {
         alert("Les mots de passe ne correspondent pas.");
         return;
@@ -167,6 +203,7 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
+          // Enregistrer l'utilisateur sans code d'activation tant que paiement non effectué
           setDoc(doc(db, "users", user.uid), {
             fullName: fullName,
             email: email,
@@ -174,19 +211,36 @@
             createdAt: new Date()
           })
           .then(() => {
-            alert("Inscription réussie. Veuillez vous connecter.");
+            alert("Inscription réussie. Veuillez effectuer le paiement pour recevoir un code d'activation.");
             showLoginSection();
           })
-          .catch((error) => {
-            alert("Erreur lors de l'enregistrement : " + error.message);
-          });
+          .catch((error) => alert("Erreur lors de l'enregistrement : " + error.message));
         })
-        .catch((error) => {
-          alert("Erreur : " + error.message);
-        });
+        .catch((error) => alert("Erreur : " + error.message));
     };
 
-    // Connexion : Si le compte n'est pas payé, ne montre pas l'ancien code d'activation
+    // ----- Affichage des sections -----
+    window.showRegistrationSection = function() {
+      document.getElementById("registration-section").classList.remove("hidden");
+      document.getElementById("login-section").classList.add("hidden");
+      document.getElementById("final-activation-form").classList.add("hidden");
+      document.getElementById("activation-notification").classList.add("hidden");
+      document.getElementById("payment-instructions").classList.add("hidden");
+      document.getElementById("payment-proof").classList.add("hidden");
+      document.getElementById("pending-verification").classList.add("hidden");
+    };
+
+    window.showLoginSection = function() {
+      document.getElementById("registration-section").classList.add("hidden");
+      document.getElementById("login-section").classList.remove("hidden");
+      document.getElementById("final-activation-form").classList.add("hidden");
+      document.getElementById("activation-notification").classList.add("hidden");
+      document.getElementById("payment-instructions").classList.add("hidden");
+      document.getElementById("payment-proof").classList.add("hidden");
+      document.getElementById("pending-verification").classList.add("hidden");
+    };
+
+    // ----- Connexion initiale (Email & Mot de passe) -----
     window.loginUser = function() {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
@@ -196,14 +250,27 @@
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if(userDoc.exists()){
             const userData = userDoc.data();
-            if(userData.paymentStatus === "confirmed"){
-              // Si paiement confirmé, afficher le nouveau code d'activation généré par admin
+            if(userData.paymentStatus === "confirmed") {
+              // Raha efa voamarina ny paiement, dia aseho ny zone activation-notification
+              // (ilay code d'activation dia haseho ihany koa raha efa voamarina)
+              // Raha tsy voamarina (pending na not_paid) dia tsy misy activation-notification.
               document.getElementById("activation-notification").classList.remove("hidden");
-              document.getElementById("user-activation-code").innerText = userData.activationCode;
-            } else if(userData.paymentStatus === "pending"){
+              // Asehoy ny code activation raha voamarina avy amin'ny admin
+              document.getElementById("activation-code-container").innerHTML = 
+                "Voici votre nouveau code d'activation : <strong id='user-activation-code'>" + userData.activationCode + "</strong>";
+              // Raha misy hafatra admin, aseho ny notification (filazana fotsiny, tsy aseho ny votoatiny)
+              if(userData.adminMessage) {
+                storedAdminMessage = userData.adminMessage;
+                document.getElementById("admin-notification-text").innerText = "Vous avez un message de l'admin.";
+                document.getElementById("admin-notification").classList.remove("hidden");
+              } else {
+                document.getElementById("admin-notification").classList.add("hidden");
+              }
+            } else if(userData.paymentStatus === "pending") {
+              // Raha efa nalefa ny preuve fa mbola tsy voamarina
               document.getElementById("pending-verification").classList.remove("hidden");
             } else {
-              // Si non payé, afficher l'annonce de paiement
+              // Raha mbola tsy nandoa vola
               document.getElementById("payment-instructions").classList.remove("hidden");
             }
           } else {
@@ -224,34 +291,12 @@
         .catch((error) => alert("Erreur : " + error.message));
     };
 
-    window.showRegistrationSection = function() {
-      document.getElementById("registration-section").style.display = "block";
-      document.getElementById("login-section").classList.add("hidden");
-    };
-
-    window.showLoginSection = function() {
-      document.getElementById("registration-section").style.display = "none";
-      document.getElementById("login-section").classList.remove("hidden");
-      // Masquer les autres sections
-      document.getElementById("payment-instructions").classList.add("hidden");
-      document.getElementById("payment-numbers").classList.add("hidden");
-      document.getElementById("payment-proof").classList.add("hidden");
-      document.getElementById("pending-verification").classList.add("hidden");
-      document.getElementById("activation-notification").classList.add("hidden");
-      document.getElementById("activated-login-section").classList.add("hidden");
-    };
-
-    window.proceedToPayment = function() {
-      document.getElementById("payment-instructions").classList.add("hidden");
-      document.getElementById("payment-numbers").classList.remove("hidden");
-    };
-
+    // ----- Gestion de la preuve de paiement -----
     window.showPaymentProofForm = function() {
-      document.getElementById("payment-numbers").classList.add("hidden");
+      document.getElementById("payment-instructions").classList.add("hidden");
       document.getElementById("payment-proof").classList.remove("hidden");
     };
 
-    // Lorsqu'un utilisateur envoie la preuve de paiement, sa demande est ajoutée et son état passe à "pending"
     window.submitPaymentProof = async function() {
       const proofFullName = document.getElementById("proof-fullname").value.trim();
       const proofPhone = document.getElementById("proof-phone").value.trim();
@@ -260,46 +305,66 @@
         alert("Veuillez remplir tous les champs.");
         return;
       }
-      const paymentData = {
-        userId: auth.currentUser.uid,
-        fullName: proofFullName,
-        phone: proofPhone,
-        amount: proofAmount,
-        timestamp: new Date().toISOString(),
-        status: "pending"
-      };
-      await addDoc(collection(db, "paymentRequests"), paymentData)
-        .then(async () => {
-          const userRef = doc(db, "users", auth.currentUser.uid);
-          await updateDoc(userRef, { paymentStatus: "pending" });
-          alert("Votre demande a été envoyée. En attente de vérification.");
-          document.getElementById("payment-proof").classList.add("hidden");
-          document.getElementById("pending-verification").classList.remove("hidden");
-        })
-        .catch((error) => alert("Erreur lors de l'envoi : " + error.message));
+      try {
+        await addDoc(collection(db, "paymentRequests"), {
+          userId: auth.currentUser.uid,
+          fullName: proofFullName,
+          phone: proofPhone,
+          amount: proofAmount,
+          timestamp: new Date().toISOString(),
+          status: "pending"
+        });
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          paymentStatus: "pending"
+        });
+        alert("Votre demande de paiement a été envoyée et est en attente de vérification.");
+        document.getElementById("payment-proof").classList.add("hidden");
+        document.getElementById("pending-verification").classList.remove("hidden");
+      } catch (error) {
+        alert("Erreur lors de l'envoi de la preuve : " + error.message);
+      }
     };
 
-    window.showActivatedLogin = function() {
+    // ----- Gestion de la notification admin -----
+    // Lorsque l'utilisateur clique sur "Voir", afficher le contenu complet du message admin
+    window.viewAdminMessage = function() {
+      alert("Message de l'admin : " + storedAdminMessage);
+      sessionStorage.setItem("adminMessageSeen", "true");
+      document.getElementById("admin-notification").classList.add("hidden");
+    };
+
+    window.dismissAdminMessage = function() {
+      sessionStorage.setItem("adminMessageSeen", "true");
+      document.getElementById("admin-notification").classList.add("hidden");
+    };
+
+    // ----- Lorsque l'utilisateur clique sur "Connectez-vous" dans la zone activation -----
+    window.showFinalActivationForm = function() {
       document.getElementById("activation-notification").classList.add("hidden");
-      document.getElementById("activated-login-section").classList.remove("hidden");
+      document.getElementById("final-activation-form").classList.remove("hidden");
+      const email = document.getElementById("login-email").value.trim();
+      document.getElementById("final-email").value = email;
     };
 
-    window.activatedLoginUser = function() {
-      const email = document.getElementById("activated-login-email").value.trim();
-      const password = document.getElementById("activated-login-password").value;
-      const activationCode = document.getElementById("activated-login-code").value.trim();
+    // ----- Formulaire final d'activation (fidirana tena) -----
+    window.finalLogin = function() {
+      const email = document.getElementById("final-email").value.trim();
+      const password = document.getElementById("final-password").value;
+      const activationCodeInput = document.getElementById("final-activation-code").value.trim();
       signInWithEmailAndPassword(auth, email, password)
         .then(async (userCredential) => {
           const user = userCredential.user;
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if(userDoc.exists()){
             const userData = userDoc.data();
-            if(userData.activationCode === activationCode) {
+            if(userData.activationCode === activationCodeInput) {
               alert("Connexion réussie ! Redirection...");
               window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
             } else {
               alert("Code d'activation incorrect.");
             }
+          } else {
+            alert("Aucune donnée utilisateur trouvée.");
           }
         })
         .catch(error => alert("Erreur : " + error.message));
