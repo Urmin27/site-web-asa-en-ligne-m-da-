@@ -50,7 +50,7 @@
     a:hover { text-decoration: underline; }
     .hidden { display: none; }
     
-    /* Style ny notification admin (ampiasaina rehefa voamarina) */
+    /* Notification admin */
     #admin-notification {
       background: #fffae6;
       border: 1px solid #ffcc00;
@@ -67,6 +67,41 @@
       padding: 5px 10px;
       font-size: 13px;
       margin-right: 5px;
+    }
+    
+    /* Styles ho an'ny page d'accueil */
+    #homepage {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    /* Navigation horizontal eo ambony ny page d'accueil */
+    .home-nav {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .home-nav button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .home-nav button:hover {
+      background: #0056b3;
+    }
+    .home-section {
+      display: none;
+    }
+    .home-section.active {
+      display: block;
     }
   </style>
 </head>
@@ -86,7 +121,7 @@
     </div>
   </div>
 
-  <!-- Section de connexion initiale (Email & Mot de passe) -->
+  <!-- Section de connexion initiale -->
   <div id="login-section" class="container hidden">
     <h2>Connexion</h2>
     <form onsubmit="event.preventDefault(); loginUser();">
@@ -102,7 +137,7 @@
     </div>
   </div>
 
-  <!-- Section fampahafantarana fandoavana (ho an'ny tsy nandoa) -->
+  <!-- Section fampahafantarana fandoavana -->
   <div id="payment-instructions" class="container hidden">
     <h2>Effectuez votre paiement</h2>
     <p>Pour recevoir votre code d'activation, veuillez envoyer <strong>1000 Ar</strong> isambolana amin'ireo laharana manaraka:</p>
@@ -129,21 +164,19 @@
     <p>Votre demande de paiement est en attente de vérification par l'administration.</p>
   </div>
 
-  <!-- Notification d'activation (mise ho azy rehefa voamarina) -->
+  <!-- Notification d'activation -->
   <div id="activation-notification" class="container hidden">
     <h2>Paiement confirmé</h2>
-    <!-- Notification admin (filazana fotsiny, tsy aseho ny votoatiny raha tsy tsindriana) -->
     <div id="admin-notification" class="hidden">
       <p id="admin-notification-text">Vous avez un message de l'admin.</p>
       <button onclick="viewAdminMessage()">Voir</button>
       <button onclick="dismissAdminMessage()">Fermer</button>
     </div>
-    <!-- Note : Tsy aseho ny code d'activation raha tsy efa voamarina -->
     <p id="activation-code-container">Voici votre nouveau code d'activation : <strong id="user-activation-code"></strong></p>
     <button onclick="showFinalActivationForm()">Connectez-vous</button>
   </div>
 
-  <!-- Formulaire final d'activation (fidirana tena) -->
+  <!-- Formulaire final d'activation -->
   <div id="final-activation-form" class="container hidden">
     <h2>Connexion - Activation</h2>
     <form onsubmit="event.preventDefault(); finalLogin();">
@@ -154,6 +187,331 @@
     </form>
   </div>
 
+  <!-- Page d'accueil (miseho rehefa activation vita) -->
+  <div id="homepage" class="container hidden">
+    <!-- Navigation horizontal ho an'ny section -->
+    <div class="home-nav">
+      <button onclick="showSection('asaMampiasaVola')">Asa Mampiasa Vola</button>
+      <button onclick="showSection('asaGratuit')">Asa Gratuit</button>
+      <button onclick="showSection('formationTrading')">Formation Trading</button>
+      <button onclick="showSection('transaction')">Transaction</button>
+    </div>
+    <!-- Contenu isaky ny section -->
+    <div id="homepage-content">
+      <div id="asaMampiasaVola" class="home-section active">
+        <h2>Asa Mampiasa Vola</h2>
+        <p>Ireto avy ny mampiasa vola Misy ato aminay izay Azo antoka tsara ary tsy Misy atahorana ho tapaka .</p>
+        <center>
+        <ul><li>NY EVO FINANCE </li></ul>
+          <h2 style="color: red;">EVO-FINANCE </h2>
+    <p>EVO-FINANCE dia sehatra vaovao amin'ny fampiasam-bola, nivoaka tamin'ny herinandro lasa teo. Ity site ity dia azo antoka tsara ary natao haharitra, ka safidy tsara ho an'izay te hampitombo ny volany amin'ny alalan'ny investissement.</p>  
+ 
+
+<p><strong> PLAN D'INVESTISSMENT </strong></p>  
+<p>Ity dia natao ho an’izay te hahazo vola isan’andro amin’ny alalan’ny tombony azo amin’ny fampiasam-bola.</p>  
+
+<p>- <strong>Niveau 1</strong>: Dépôt <strong>10$ - 200$</strong>, tombony <strong>2.5% isan’andro</strong>.</p>  
+<p>- <strong>Niveau 2</strong>: Dépôt <strong>200$ - 999$</strong>, tombony <strong>2.6% isan’andro</strong>.</p>  
+<p>- <strong>Niveau 3</strong>: Dépôt <strong>1000$ miakatra</strong>, tombony <strong>2.7% isan’andro</strong>.</p>  
+
+<p>Ity plan ity dia manome fidiram-bola matotra ho an’izay mampiasa vola amin’ny site.</p>  
+
+<p>EVO-FINANCE dia mametraka rafitra mazava sy azo antoka amin’ny fampiasam-bola, ka anjaranao no misafidy izay mety aminao!</p>
+
+<a href="https://evo-finance-inscription-ao1m.vercel.app/">s'inscrir / hisoratra anarana </a>
+</center >
+<h3 style ="color : red ;">TUTO D'INSCRIPTION EVO-FINANCE </h3>
+
+<iframe width="320" height="320" src="https://www.youtube.com/embed/xtiLZDx6rlc" frameborder="0" allowfullscreen></iframe><br><br>
+
+</center>
+
+<h2 style ="color :blue ;text -align : center ;">WEB3 GPT </h2>
+    <center ><p><br><br>  
+  Ity no site izay efa vita analyse tsara, fa mbola haharitra 5 mois. Izao no fotoana mety raha hanomboka ampiasa vola ianao. Aza miandry ela, fa asa en ligne no ataontsika. Azonao atao ny manomboka amin'ny dépôt <strong>10$</strong>. Ho an'izay tsy manana <strong>portefeuille électronique</strong>, dia izahay no manao <strong>dépôt direct</strong> amin'ny site ho anao. Azonao atao ihany koa ny manao <strong>dépôt amin'ny Mobile Money</strong>.  
+</p>  
+
+<p>  
+  Tsindrio ny bokotra <strong>"<a href="https://web3-gpt.lat/#/pages/account/register?shareCode=23454294">s'inscrir'</a>"</strong> eto  raha te hanao investissement. Afaka manao dépôt amin'ny <strong>portefeuille électronique</strong> ihany koa izahay.  
+</p>  
+
+<p>  
+  <strong>🏆 Plan d'investissement 🎆</strong><br>  
+  ✅ <strong>Dépôt 10$</strong> ⏭️ <strong>Gains 2.50% na 0.25$ par jours</strong><br>  
+  ✅ <strong>Dépôt 20$</strong> ⏭️ <strong>Gains 0.50$ par jours</strong><br>  
+  ✅ <strong>Dépôt 50$</strong> ⏭️ <strong>Gains 1.25$ par jours</strong><br>  
+  ✅ <strong>Dépôt 100$</strong> ⏭️ <strong>Gains 2.50$ par jours</strong><br>  
+  ✅ <strong>Dépôt 200$</strong> ⏭️ <strong>Gains 5$ par jours</strong>  
+</p></center> <br><br>  
+    
+   <a href="https://web3-gpt.lat/#/pages/account/register?shareCode=23454294">s'inscrir / hisoratra anarana </a> 
+<h2 style ="color :blue ;text -align : center ;">SUPPORT FINANCE </h2>
+    <center ><p><br><br>     
+    <p>  
+  🌌<strong>SF QI PLATFORMS</strong>🌌  
+  Ity koa ny site d'investissement faharoa izay efa vita analyse fa mbola haharitra <strong>5 mois</strong>.  
+</p>  
+
+<p>  
+  Tamin'ny <strong>15 août 2024</strong> izy io no nivoaka, tsy ny gasy ihany no manao an'ity fa efa olona maneran-tany.  
+</p>  
+
+<p>  
+  <strong>10$</strong> ihany dia efa azonao ampiasaina ato. Araho ny <strong>plan d'investissement</strong> eto ambany.  
+</p>  
+
+<p>  
+  <strong>📌 PLAN D'INVESTISSEMENT</strong><br>  
+  ⬛ Manao dépôt <strong>10$</strong> 💵 gains <strong>0.25$ par jours</strong> ✅<br>  
+  ⬛ Manao dépôt <strong>20$</strong> 💵 gains <strong>0.50$ par jours</strong> ✅<br>  
+  ⬛ Manao dépôt <strong>50$</strong> 💵 gains <strong>1.25$ par jours</strong> ✅<br>  
+  ⬛ Manao dépôt <strong>100$</strong> 💵 gains <strong>2.50$ par jours</strong> ✅<br>  
+  ⬛ Manao dépôt <strong>200$</strong> 💵 gains <strong>5$ par jours</strong> ✅  
+</p>
+
+<a href="https://www.sf-qi.co/#/pages/register?referral_code=HG77YG">s'inscrir/hisoratra anarana</a>
+
+
+<h2 style ="color :blue ;text -align : center ;">GDQ WEB3 </h2>
+    <center ><p><br><br> 
+<p>  
+  💲💶<strong>GDQ-WEB3</strong>💶💲  
+</p>  
+
+<p>  
+  Ity indray site vaovao, nivoaka amin'ity taona <strong>2025</strong> ity.  
+</p>  
+
+<p>  
+  Izahay dia manome <strong>garantie</strong> ho an'ny mpanaraka anay fa maharitra <strong>10 mois</strong> ity site ity.  
+</p>  
+
+<p>  
+  Hararaoty foana rehefa misy zavatra vaovao mivoaka toy izao, aza miandry efa <strong>7 mois</strong> nivoahany izay vao hanomboka hanao an'ilay izy.  
+</p>  
+
+<p>  
+  Izao no fotoana izay afahanao manomboka sady mbola tsy misy <strong>risque de perte</strong> mihitsy, raha izao ianao no hanomboka hanao an'ilay izy.  
+</p>  
+
+<p>  
+  Harao eto ambany ny <strong>plan d'investissement</strong>.  
+</p>  
+
+<p>  
+  <strong>📌 PLAN D'INVESTISSEMENT</strong><br>  
+  👉 Dépôt <strong>10$~29$</strong> ⏭️ gains <strong>1.8%</strong>. Mahazo <strong>2 tâche</strong> par jours.<br>  
+  👉 Dépôt <strong>30$~499$</strong> ⏭️ gains <strong>2%</strong>. Mahazo <strong>4 tâche</strong> par jours.<br>  
+  👉 Dépôt <strong>plus 500$</strong> ⏭️ gains <strong>3.3%</strong>. Mahazo <strong>5 tâche</strong> par jours.  
+</p>
+<h3 style="color:white; border:1px solid black; background-color:black; border-radius:15px; text-align:center;">
+    TUTORIEL D'INSCRIPTION GDQ WEB3
+</h3>
+<iframe width="320" height="320" 
+    src="https://www.youtube.com/embed/L4IaJHj71Ec" 
+    frameborder="0" allowfullscreen style="border-radius: 5px;">
+</iframe>
+
+<h3 style="color:white; border:1px solid black; background-color:black; border-radius:15px; text-align:center;">
+    TUTORIEL DU DEPOT GDQ WEB3
+</h3>
+<iframe width="320" height="320" 
+    src="https://www.youtube.com/embed/4zvlelfsRNQ" 
+    frameborder="0" allowfullscreen>
+</iframe>
+
+<h3 style="color:white; border:1px solid black; background-color:black; border-radius:15px; text-align:center;">
+    TUTORIEL DU RETRAIT GDQ WEB3
+</h3>
+<iframe width="320" height="320" 
+    src="https://www.youtube.com/embed/iVBlzIWj0Do" 
+    frameborder="0" allowfullscreen>
+</iframe>
+<a href="https://gdqai.com/#/register?i=711456">s'inscrir / hisoratra anarana </a>
+
+<h2 style ="color :blue ;text -align : center ;">CAPITAL FINANCE </h2>
+    <center ><p><br><br> 
+<p>  
+  💶<strong>CAPITAL FINANCE</strong>💶  
+</p>  
+
+<p>  
+  <strong>Capital Finance</strong> dia site nivoaka tamin'ny taona <strong>2017</strong>, manolotra fomba fidiram-bola amin'ny alalan'ny fametrahana vola amin'ny rafitra manokana. Izy io dia anisan'ny toerana fanta-daza indrindra amin'ny fidiram-bola ao amin'ny sehatra ara-bola.  
+</p>  
+
+<p>  
+  Raha te hahazo vola amin'izany, dia azonao atao ny manaraka ireo <strong>plan</strong> azo isafidianana:  
+</p>  
+
+<p>  
+  <strong>📌 Plan 1:</strong><br>  
+  - <strong>Dépôt:</strong> 5$~500$<br>  
+  - <strong>Gains:</strong> 120%<br>  
+  - <strong>Contrat:</strong> 90 jours na 3 mois<br>  
+  - <strong>Gains par mois:</strong> 40%  
+</p>  
+
+<p>  
+  <strong>📌 Plan 2:</strong><br>  
+  - <strong>Dépôt:</strong> 50$~5000$<br>  
+  - <strong>Gains total:</strong> 130%<br>  
+  - <strong>Gains par mois:</strong> 43.33%<br>  
+  - <strong>Contrat:</strong> 3 mois  
+</p>  
+
+<p>  
+  <strong>📌 Plan 3:</strong><br>  
+  - <strong>Dépôt:</strong> 100$~10.000$<br>  
+  - <strong>Gains total:</strong> 140%<br>  
+  - <strong>Gains par mois:</strong> 46.66%<br>  
+  - <strong>Contrat:</strong> 3 mois  
+</p>
+
+<a href="https://my-capitalfinance.net/signup.php?refer=Valerida&ral=23874">S'inscrir / hisoratra anarana </a>
+      </div>
+      
+      <div id="asaGratuit" class="home-section">
+        <h2>Asa Gratuit</h2>
+        <p>Azonao atao ny manaraka ny fampianarana Asa en ligne Mada Gratuit ato amin'ny pejy ity. Araho eto ambany izany </p>
+        
+        <h2 style ="color :blue ;text -align : center ;">MICRO TACHE </h2>
+    <center ><p><br><br>
+    <p>Mba afahanao manaraka ny fampianarana dia Araho eto ambany ny video fanazavana ny maksika ny microtache. </p> <br>
+    
+   <p style="font-size: 18px; line-height: 1.6; color: #333; text-align: justify;">
+   Ny <strong>MICROTACHE.COM</strong >  dia sehatra azo anankinana izay manome fahafahana hahazo vola amin’ny alalan’ny asa tsotra atao amin’ny internet. Ao amin’ny MICROTACHE.COM, azonao atao ny mamita tache maro samihafa toy ny mijery dokam-barotra, misoratra anarana amin’ny site sasany, ary manao asa tsotra hafa, ka mahazo vola amin’izany. Ny tombony dia tsy misy fepetra sarotra, ary afaka manomboka amin’ny kely dia kely.  
+
+
+      
+        <h2>VIDEO 1 :<br><br >
+        
+        FAMPIANARANA MANAO INSCRIPTION MICROTACHE</h2>
+        <iframe src="https://www.youtube.com/embed/VoyrLGL5mpk" allowfullscreen></iframe>
+   
+
+    
+        <h2>Video 2:<br><br >
+        
+        FAMPIANARANA MANAO ASA @ MICROTACHE</h2>
+        <iframe src="https://www.youtube.com/embed/gv5YN7IboMk" allowfullscreen></iframe>  <br><br>
+         
+         <h2 style ="color :blue ;text -align : center ;">FREE BNB </h2>
+    <center ><p><br>
+         Amin’ny BNBFREE.IN kosa, azo atao ny mahazo <strong>BNB</strong> amin’ny fomba mora sy mahomby. Raha manaraka ny stratégie marina ianao, dia afaka mahazo <strong>minimum retrait par mois</strong> amin’ny fotoana fohy. Hisy fizarana manokana momba ny stratégie hanampy anao hahazo vokatra tsara indrindra amin’ity sehatra ity.  
+
+      <h2>VIDEO1: FAMPIANARANA MANAO INSCRIPTION SY NY ASA ATAO @ BNBFREE</h2>
+        <iframe src="https://www.youtube.com/embed/TfmjKfRUxdM" allowfullscreen></iframe>
+        <p>Eo ampiandrasana ny fizarana strategy bnb izay azahoana minimum retrait par mois isika izao, manana faharetana kely tompoko.... </p>  
+        
+        <h2 style ="color :blue ;text -align : center ;">IPWEB MICROTACH </h2>
+    <center ><p><br>
+    
+     <h2>IPWEB – Fomba Tsotra Ahazoana Vola Amin’ny Internet  </h2>
+
+<p style="  
+    background-color: #D2691E;  
+    color: white;  
+    padding: 20px;  
+    border-radius: 10px;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  
+    font-size: 18px;  
+    text-align: center;  
+    border: 3px solid #8B4513;  
+">  
+<strong>IPWEB</strong> dia sehatra ahafahana mahazo vola amin’ny alalan’ny fanaovana asa tsotra anaty internet. Raha mitady fidiram-bola ianao nefa tsy te hanao fampiasam-bola, dia <strong>IPWEB</strong> no vahaolana mety aminao!  
+
+<br><br>  
+<strong>🌟 Inona no asa atao ao amin'ny IPWEB?</strong>  
+<br>  
+✔ <strong>Mijery pejy web</strong> – Mahazo vola amin’ny fitsidihana tranonkala voafaritra.  
+<br>  
+✔ <strong>Mijery vidéo</strong> – Mahazo fidiram-bola amin’ny fijerena vidéo avy amin’ny sponsor.  
+<br>  
+✔ <strong>Manao tâche tsotra</strong> – Asa madinika toy ny fanarahana tambajotra sosialy na fanehoan-kevitra.  
+<br>  
+✔ <strong>Manasa namana</strong> – Mahazo bonus rehefa misy olona miditra amin’ny alalan’ny lien referral-nao.  
+<br><br>  
+
+<strong>💰 Mila vola ve ianao amin'ny fanombohana?</strong>  
+<br>  
+⏩ <strong>Tsy ilaina!</strong> Tsy mila investissement amin’ny IPWEB, fa mahazo vola amin’ny asa tsotra fotsiny.  
+<br><br>  
+
+<strong>🚀 Ahoana ny fandoavana ny vola?</strong>  
+<br>  
+✔ <strong>Mety amin’ny portefeuille électronique maro</strong>: Payeer, Perfect Money, WebMoney, sns.  
+<br>  
+✔ <strong>Fandoavana haingana</strong>: Afaka manala vola amin’ny minimum faible.  
+<br><br>  
+
+<strong>⏳ Aza miandry ela! Ampidiro izao ary manomboka mahazo vola amin'ny internet!</strong>  
+</p>  
+
+<a href="https://www.ipweb.pro/?Horlando27" style="  
+    display: block;  
+    background-color: #8B4513;  
+    color: white;  
+    text-align: center;  
+    padding: 15px 30px;  
+    font-size: 18px;  
+    border-radius: 10px;  
+    text-decoration: none;  
+    font-weight: bold;  
+    width: 200px;  
+    margin: 20px auto;  
+">S'inscrire</a>  <br ><br >
+<a href="https://m.me/j/AbbjX0YBmpokejn8/">Rejoindre le groupe IPWEB </a><br ><br ><br ><br ><br ><br ><br ><br >
+</center>
+
+<p>Eo ampiandrasana ny fandatashana video fampianarana IPWEB feno eto aminy site isika izao, azonao atao manao rejoindre le group amizao manadrapahandatsahana ny tuto video eto aminy site, manana faharetana.... </p>
+      </div>
+      <div id="formationTrading" class="home-section">
+        <h2>Formation Trading</h2>
+        <p>Tongasoa eto amin'ny fianarana trading bot ianao. Raha mbola tsy nahazo robot Gratuit izay hoentianao ampiasaina ianao dia mifandraisa @ service clients Maka izany. Ireto ambany ireto ny video vitsivitsy fampianarana ny debutant araho tsara izany </p>
+        
+   
+        <h2 style ="color :blue ;text -align : center ;">TUTORIAL DERIV BOT </h2>
+    <center ><p><br>>
+
+       
+            <h3>Fanaovana INSCRIPTION amin'ny Deriv Bot</h3>
+            <iframe src="https://www.youtube.com/embed/xI7xLAdDplY" allowfullscreen></iframe>
+            <a class="download-btn" href="https://ssyoutube.com/watch?v=xI7xLAdDplY" target="_blank">
+                Telecharger Video
+            </a>
+        
+
+        
+            <h3>Fanofakana reel amin'ny Deriv Bot</h3>
+            <iframe src="https://www.youtube.com/embed/j8AzNscKVpY" allowfullscreen></iframe>
+            <a class="download-btn" href="https://ssyoutube.com/watch?v=j8AzNscKVpY" target="_blank">
+                Telecharger Video
+            </a>
+        
+
+        
+            <h3>Fampidirana Robot sy Fampiasana azy</h3>
+            <iframe src="https://www.youtube.com/embed/Yd3gW_QXv2s" allowfullscreen></iframe>
+            <a class="download-btn" href="https://ssyoutube.com/watch?v=Yd3gW_QXv2s" target="_blank">
+                Telecharger Video
+            </a>
+        
+
+        
+            <h3>Fanaovana Dépôt amin'ny Deriv Bot</h3>
+            <iframe src="https://www.youtube.com/embed/3S4bGGMhuSk" allowfullscreen></iframe>
+            <a class="download-btn" href="https://ssyoutube.com/watch?v=3S4bGGMhuSk" target="_blank">
+                Telecharger Video
+            </a>     
+      </div>
+      <div id="transaction" class="home-section">
+        <h2>Transaction</h2>
+        <p>Rehefa hanao retrait na depot amin'ny site iray ianao dia eto ihany no mahavita izany. Fa amizao mbola andalana fametrahana ny section Commercent eto isaka, manana faharetana .</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + App JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
     import {
@@ -187,7 +545,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Global variable hanovozana ny hafatra admin
+    // Global variable ho an'ny hafatra admin
     let storedAdminMessage = "";
 
     // ----- Inscription -----
@@ -228,6 +586,7 @@
       document.getElementById("payment-instructions").classList.add("hidden");
       document.getElementById("payment-proof").classList.add("hidden");
       document.getElementById("pending-verification").classList.add("hidden");
+      document.getElementById("homepage").classList.add("hidden");
     };
 
     window.showLoginSection = function() {
@@ -238,9 +597,10 @@
       document.getElementById("payment-instructions").classList.add("hidden");
       document.getElementById("payment-proof").classList.add("hidden");
       document.getElementById("pending-verification").classList.add("hidden");
+      document.getElementById("homepage").classList.add("hidden");
     };
 
-    // ----- Connexion initiale (Email & Mot de passe) -----
+    // ----- Connexion initiale -----
     window.loginUser = function() {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
@@ -251,14 +611,10 @@
           if(userDoc.exists()){
             const userData = userDoc.data();
             if(userData.paymentStatus === "confirmed") {
-              // Raha efa voamarina ny paiement, dia aseho ny zone activation-notification
-              // (ilay code d'activation dia haseho ihany koa raha efa voamarina)
-              // Raha tsy voamarina (pending na not_paid) dia tsy misy activation-notification.
+              // Afficher activation-notification avec code d'activation et notification admin éventuelle
               document.getElementById("activation-notification").classList.remove("hidden");
-              // Asehoy ny code activation raha voamarina avy amin'ny admin
               document.getElementById("activation-code-container").innerHTML = 
                 "Voici votre nouveau code d'activation : <strong id='user-activation-code'>" + userData.activationCode + "</strong>";
-              // Raha misy hafatra admin, aseho ny notification (filazana fotsiny, tsy aseho ny votoatiny)
               if(userData.adminMessage) {
                 storedAdminMessage = userData.adminMessage;
                 document.getElementById("admin-notification-text").innerText = "Vous avez un message de l'admin.";
@@ -267,10 +623,8 @@
                 document.getElementById("admin-notification").classList.add("hidden");
               }
             } else if(userData.paymentStatus === "pending") {
-              // Raha efa nalefa ny preuve fa mbola tsy voamarina
               document.getElementById("pending-verification").classList.remove("hidden");
             } else {
-              // Raha mbola tsy nandoa vola
               document.getElementById("payment-instructions").classList.remove("hidden");
             }
           } else {
@@ -291,7 +645,7 @@
         .catch((error) => alert("Erreur : " + error.message));
     };
 
-    // ----- Gestion de la preuve de paiement -----
+    // ----- Preuve de paiement -----
     window.showPaymentProofForm = function() {
       document.getElementById("payment-instructions").classList.add("hidden");
       document.getElementById("payment-proof").classList.remove("hidden");
@@ -325,8 +679,7 @@
       }
     };
 
-    // ----- Gestion de la notification admin -----
-    // Lorsque l'utilisateur clique sur "Voir", afficher le contenu complet du message admin
+    // ----- Notification admin -----
     window.viewAdminMessage = function() {
       alert("Message de l'admin : " + storedAdminMessage);
       sessionStorage.setItem("adminMessageSeen", "true");
@@ -338,7 +691,7 @@
       document.getElementById("admin-notification").classList.add("hidden");
     };
 
-    // ----- Lorsque l'utilisateur clique sur "Connectez-vous" dans la zone activation -----
+    // ----- Activation finale -----
     window.showFinalActivationForm = function() {
       document.getElementById("activation-notification").classList.add("hidden");
       document.getElementById("final-activation-form").classList.remove("hidden");
@@ -346,7 +699,6 @@
       document.getElementById("final-email").value = email;
     };
 
-    // ----- Formulaire final d'activation (fidirana tena) -----
     window.finalLogin = function() {
       const email = document.getElementById("final-email").value.trim();
       const password = document.getElementById("final-password").value;
@@ -358,8 +710,17 @@
           if(userDoc.exists()){
             const userData = userDoc.data();
             if(userData.activationCode === activationCodeInput) {
-              alert("Connexion réussie ! Redirection...");
-              window.location.href = "https://site-web-asa-en-ligne-m-da-1-zhdm.vercel.app/";
+              alert("Connexion réussie !");
+              // Afeno ny formulaire rehetra ary asehoy ny page d'accueil
+              document.getElementById("registration-section").classList.add("hidden");
+              document.getElementById("login-section").classList.add("hidden");
+              document.getElementById("payment-instructions").classList.add("hidden");
+              document.getElementById("payment-proof").classList.add("hidden");
+              document.getElementById("pending-verification").classList.add("hidden");
+              document.getElementById("activation-notification").classList.add("hidden");
+              document.getElementById("final-activation-form").classList.add("hidden");
+              // Asehoy ny page d'accueil
+              document.getElementById("homepage").classList.remove("hidden");
             } else {
               alert("Code d'activation incorrect.");
             }
@@ -369,6 +730,18 @@
         })
         .catch(error => alert("Erreur : " + error.message));
     };
+
+    // ----- Navigation ao amin'ny page d'accueil -----
+    window.showSection = function(sectionId) {
+      const sections = document.querySelectorAll(".home-section");
+      sections.forEach(section => {
+        if(section.id === sectionId) {
+          section.classList.add("active");
+        } else {
+          section.classList.remove("active");
+        }
+      });
+    };
   </script>
 </body>
-</html>
+  </html>
